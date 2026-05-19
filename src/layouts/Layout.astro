@@ -27,6 +27,12 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
+		<div class="fixed top-0 z-[-2] h-screen w-screen bg-zinc-950">
+			<div class="aurora-teal absolute h-96 w-96 rounded-full bg-teal-500 opacity-20 blur-3xl"></div>
+			<div class="aurora-purple absolute h-96 w-96 rounded-full bg-purple-500 opacity-20 blur-3xl"></div>
+			<div class="aurora-emerald absolute h-96 w-96 rounded-full bg-emerald-500 opacity-20 blur-3xl"></div>
+		</div>
+
 		<slot />
 		<Analytics />
 	</body>
@@ -37,48 +43,46 @@ const { title } = Astro.props;
 		scroll-behavior: smooth;
 	}
 	body {
-		background-color: #09090b; /* zinc-950 */
+		background-color: transparent;
 		color: #d4d4d8;
-		position: relative;
 		overflow-x: hidden;
 	}
-	body::before,
-	body::after {
-		content: '';
-		position: absolute;
-		width: 1000px;
-		height: 1000px;
-		border-radius: 50%;
-		filter: blur(150px);
-		z-index: -1;
-		will-change: transform;
-	}
-	body::before {
-		background-color: rgba(20, 184, 166, 0.1); /* Teal */
+
+	.aurora-teal {
 		top: -20%;
-		left: -20%;
-		animation: moveGlowTeal 25s infinite alternate ease-in-out;
+		left: -10%;
+		animation: aurora 20s infinite linear alternate;
 	}
-	body::after {
-		background-color: rgba(139, 92, 246, 0.1); /* Purple */
+	.aurora-purple {
+		top: 50%;
+		left: 50%;
+		animation: aurora 25s infinite linear alternate;
+		animation-delay: 3s;
+	}
+	.aurora-emerald {
 		bottom: -20%;
-		right: -20%;
-		animation: moveGlowPurple 30s infinite alternate ease-in-out;
+		right: -10%;
+		animation: aurora 22s infinite linear alternate;
+		animation-delay: 6s;
 	}
-	@keyframes moveGlowTeal {
-		from {
-			transform: translate(0, 0) rotate(0deg);
+
+	@keyframes aurora {
+		0% {
+			transform: translate(0, 0) rotate(0deg) scale(1);
 		}
-		to {
-			transform: translate(200px, 200px) rotate(180deg);
+		50% {
+			transform: translate(25vw, 30vh) rotate(180deg) scale(1.2);
+		}
+		100% {
+			transform: translate(0, 0) rotate(360deg) scale(1);
 		}
 	}
-	@keyframes moveGlowPurple {
-		from {
-			transform: translate(0, 0) rotate(0deg);
-		}
-		to {
-			transform: translate(-200px, -200px) rotate(-180deg);
-		}
+
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	.no-scrollbar {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
 	}
 </style>

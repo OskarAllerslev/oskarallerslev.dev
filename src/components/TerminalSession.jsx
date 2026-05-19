@@ -10,27 +10,9 @@ const commands = {
         <div class="flex"><span class="w-20 shrink-0 text-zinc-500">links</span><span>Display Github/Email links.</span></div>
         <div class="flex"><span class="w-20 shrink-0 text-zinc-500">clear</span><span>Reset the terminal.</span></div>
     `,
-	experience: `
-        <p class="font-bold text-zinc-100">Student Actuary, DevOps & Data Engineering</p>
-        <p class="text-zinc-400">PFA Pension | Sep 2022 - Present</p>
-        <ul class="list-disc list-inside mt-2 space-y-1">
-            <li>Developed and maintained actuarial models and data pipelines in R & Python.</li>
-            <li>Implemented and managed CI/CD pipelines for automated testing and deployment.</li>
-            <li>Worked with large-scale data processing and cloud infrastructure (Azure).</li>
-        </ul>
-    `,
-	education: `
-        <p class="font-bold text-zinc-100">MSc, Actuarial Mathematics</p>
-        <p class="text-zinc-400">University of Copenhagen | 2022 - 2024</p>
-        <p class="font-bold text-zinc-100 mt-2">BSc, Actuarial Mathematics</p>
-        <p class="text-zinc-400">University of Copenhagen | 2019 - 2022</p>
-    `,
-	skills: `
-        <p class="font-bold text-zinc-100">Languages:</p>
-        <p>Rust, C++, R, Python, SQL, TypeScript</p>
-        <p class="font-bold text-zinc-100 mt-2">Technologies:</p>
-        <p>Docker, Kubernetes, Azure, Terraform, CI/CD, XGBoost, PyTorch, React</p>
-    `,
+	experience: `[ Nov 2024 - Present ] PFA Pension | Student Actuary\n- Designed Azure DevOps ETL pipelines for Commercial Insurance.\n- Automated client reporting via R officer package.\n- Built interactive Shiny dashboards for financial metrics.`,
+	education: `[ 2024 - Present ] MSc Actuarial Mathematics @ UCPH\n- Focus: Advanced probability, QRM, ML, financial econometrics.\n[ 2021 - 2024 ] BSc Actuarial Mathematics @ UCPH\n- Thesis: Hybrid insurance pricing framework.\n- Highlight: Extreme Value Theory (EVT) & GLM modeling.`,
+	skills: `Languages: R (Advanced/Package Dev), SQL, Python, C++, LaTeX.\nTools: Git, Azure DevOps, VS Code, Shiny, Tidyverse.\nMath: Extreme Value Theory, GLM, Cointegration, Machine Learning.`,
 	projects: [
 		'First Rust API (Stock VaR)',
 		'Rough Volatility Monte Carlo Pricer',
@@ -106,11 +88,14 @@ export default function TerminalSession() {
 
 	return (
 		<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-sm text-zinc-300 h-[600px] flex flex-col">
-			<div ref={terminalBodyRef} className="flex-grow overflow-y-auto">
+			<div ref={terminalBodyRef} className="flex-grow overflow-y-auto no-scrollbar">
 				{history.map((entry, index) => (
 					<div key={index} className="mb-2">
 						{entry.command && <Prompt>{entry.command}</Prompt>}
-						<div dangerouslySetInnerHTML={{ __html: entry.output }} />
+						<div
+							className="whitespace-pre-wrap"
+							dangerouslySetInnerHTML={{ __html: entry.output }}
+						/>
 					</div>
 				))}
 			</div>
