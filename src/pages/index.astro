@@ -39,9 +39,10 @@ const projects = [
 ---
 
 <Layout title="Oskar Allerslev | Portfolio">
-	<main class="container mx-auto max-w-3xl px-6 py-20">
-		<!-- Hero Section -->
-		<section class="mb-16">
+	<main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-10 px-6 py-12 relative z-10">
+		<div>
+			<!-- Hero Section -->
+			<section class="mb-16">
 			<h1 class="text-4xl font-bold tracking-tight text-zinc-100 sm:text-5xl">Oskar Allerslev</h1>
 			<h2 class="mt-2 text-lg font-medium tracking-tight text-teal-400 sm:text-xl">
 				Quantitative Infrastructure & Actuarial Engineering
@@ -67,7 +68,7 @@ const projects = [
 		</section>
 
 		<!-- Featured Infrastructure -->
-		<section class="mb-16">
+		<section>
 			<h3 class="text-sm font-semibold uppercase tracking-widest text-zinc-500">
 				Featured Infrastructure
 			</h3>
@@ -138,9 +139,12 @@ const projects = [
 		</section>
 
 		<!-- Terminal / Contact -->
-		<section>
-			<TerminalSession client:load />
-		</section>
+		</div>
+		<aside>
+			<div class="sticky top-12">
+				<TerminalSession client:load />
+			</div>
+		</aside>
 	</main>
 </Layout>
 

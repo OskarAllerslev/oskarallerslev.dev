@@ -38,18 +38,47 @@ const { title } = Astro.props;
 	}
 	body {
 		background-color: #09090b; /* zinc-950 */
-		background-image: linear-gradient(rgba(20, 184, 166, 0.05) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(20, 184, 166, 0.05) 1px, transparent 1px);
-		background-size: 40px 40px;
-		animation: moveGrid 15s linear infinite;
 		color: #d4d4d8;
+		position: relative;
+		overflow-x: hidden;
 	}
-	@keyframes moveGrid {
-		0% {
-			background-position: 0 0;
+	body::before,
+	body::after {
+		content: '';
+		position: absolute;
+		width: 1000px;
+		height: 1000px;
+		border-radius: 50%;
+		filter: blur(150px);
+		z-index: -1;
+		will-change: transform;
+	}
+	body::before {
+		background-color: rgba(20, 184, 166, 0.1); /* Teal */
+		top: -20%;
+		left: -20%;
+		animation: moveGlowTeal 25s infinite alternate ease-in-out;
+	}
+	body::after {
+		background-color: rgba(139, 92, 246, 0.1); /* Purple */
+		bottom: -20%;
+		right: -20%;
+		animation: moveGlowPurple 30s infinite alternate ease-in-out;
+	}
+	@keyframes moveGlowTeal {
+		from {
+			transform: translate(0, 0) rotate(0deg);
 		}
-		100% {
-			background-position: 40px 40px;
+		to {
+			transform: translate(200px, 200px) rotate(180deg);
+		}
+	}
+	@keyframes moveGlowPurple {
+		from {
+			transform: translate(0, 0) rotate(0deg);
+		}
+		to {
+			transform: translate(-200px, -200px) rotate(-180deg);
 		}
 	}
 </style>

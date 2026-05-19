@@ -24,35 +24,51 @@ const generatePath = (H, length) => {
 
 export default function FbmSimulator() {
 	const [H, setH] = useState(0.2);
-	const [pathKey, setPathKey] = useState(0);
+	const [seed, setSeed] = useState(0);
 
 	const width = 600;
 	const height = 300;
 	const points = 200;
-	const padding = 20;
+	const padding = { top: 20, right: 20, bottom: 20, left: 40 };
 
-	const pathData = useMemo(() => {
+	const { pathData, minVal, maxVal } = useMemo(() => {
 		const rawPath = generatePath(H, points);
-		const yMin = Math.min(...rawPath);
-		const yMax = Math.max(...rawPath);
-		const yRange = yMax - yMin || 1;
+		const minVal = Math.min(...rawPath);
+		const maxVal = Math.max(...rawPath);
+		const yRange = maxVal - minVal || 1;
 
-		return rawPath
+		const pathString = rawPath
 			.map((val, i) => {
-				const x = padding + (i / (points - 1)) * (width - padding * 2);
-				const y = height - padding - ((val - yMin) / yRange) * (height - padding * 2);
+				const x = padding.left + (i / (points - 1)) * (width - padding.left - padding.right);
+				const y =
+					height -
+					padding.bottom -
+					((val - minVal) / yRange) * (height - padding.top - padding.bottom);
 				return `${x},${y}`;
 			})
 			.join(' ');
-	}, [H, pathKey]);
+		return { pathData: pathString, minVal, maxVal };
+	}, [H, seed]);
 
 	return (
 		<div className="mt-4">
 			<div className="border-b border-zinc-800 pb-4">
-				<svg width="100%" viewBox={`0 0 ${width} ${height}`} className="rounded-lg bg-zinc-950 border border-zinc-800">
+				<svg
+					width="100%"
+					viewBox={`0 0 ${width} ${height}`}
+					className="rounded-lg bg-zinc-950 border border-zinc-800"
+				>
 					{/* Axes */}
-					<line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="#3f3f46" strokeWidth="1" />
-					<line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#3f3f46" strokeWidth="1" />
+					<line x1={padding.left} y1={padding.top} x2={padding.left} y2={height - padding.bottom} stroke="#52525b" strokeWidth="1" />
+					<line x1={padding.left} y1={height - padding.bottom} x2={width - padding.right} y2={height - padding.bottom} stroke="#52525b" strokeWidth="1" />
+
+					{/* Y-Axis Labels */}
+					<text x={padding.left - 8} y={padding.top + 4} textAnchor="end" fill="#a1a1aa" fontSize="10">
+						{maxVal.toFixed(2)}
+					</text>
+					<text x={padding.left - 8} y={height - padding.bottom} textAnchor="end" fill="#a1a1aa" fontSize="10">
+						{minVal.toFixed(2)}
+					</text>
 
 					{/* Path */}
 					<polyline
@@ -85,7 +101,10 @@ export default function FbmSimulator() {
 						className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-700 accent-teal-500"
 					/>
 				</div>
-				<button onClick={() => setPathKey((k) => k + 1)} className="rounded-md bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-700">
+				<button
+					onClick={() => setSeed((s) => s + 1)}
+					className="rounded-md bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-700"
+				>
 					Regenerate Path
 				</button>
 			</div>
@@ -94,13 +113,21 @@ export default function FbmSimulator() {
 				<h5 className="text-base font-semibold text-zinc-100">Rough Volatility Model</h5>
 				<div className="mt-4 space-y-4 text-sm text-zinc-400">
 					<div>
-						<p>Asset price dynamics under a rough stochastic volatility model (like Rough Bergomi) follow:</p>
+						<p>
+							Asset price dynamics under a rough stochastic volatility model (like Rough Bergomi)
+							follow:
+						</p>
 						<BlockMath math="dS_t = S_t \\sqrt{V_t} dW_t" />
-						<p>The variance process <InlineMath math="V_t" /> is driven by a fractional Brownian motion:</p>
+						<p>
+							The variance process <InlineMath math="V_t" /> is driven by a fractional Brownian
+							motion:
+						</p>
 						<BlockMath math={'V_t = V_0 \\exp\\left( \\eta B_H(t) - \\frac{1}{2} \\eta^2 t^{2H} \\right)'} />
 						<p className="mt-2">
-							The variance process is driven by a fractional Brownian motion <InlineMath math="B_H(t)" /> with <InlineMath math="H < 0.5" />, capturing the rough
-							volatility empirically observed in energy markets. Simulation requires exact Cholesky decomposition of the auto-covariance matrix.
+							The variance process is driven by a fractional Brownian motion{' '}
+							<InlineMath math="B_H(t)" /> with <InlineMath math="H < 0.5" />, capturing the
+							rough volatility empirically observed in energy markets. Simulation requires exact
+							Cholesky decomposition of the auto-covariance matrix.
 						</p>
 					</div>
 				</div>
