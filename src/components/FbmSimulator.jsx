@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import 'katex/dist/katex.min.css';
 import { BlockMath, InlineMath } from 'react-katex';
 
 // A simple function to generate an approximate Fractional Brownian Motion path
