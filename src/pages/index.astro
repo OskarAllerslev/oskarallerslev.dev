@@ -1,32 +1,43 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import VaRCalculator from '../components/VaRCalculator.jsx';
+import RustApiExplorer from '../components/RustApiExplorer.jsx';
+import FbmSimulator from '../components/FbmSimulator.jsx';
 import TerminalSession from '../components/TerminalSession.jsx';
+
+const components = {
+	RustApiExplorer,
+	FbmSimulator,
+};
 
 const projects = [
 	{
 		title: 'First Rust API (Stock VaR)',
 		href: 'https://github.com/OskarAllerslev/first-rust-api',
-		description: 'A high-performance backend built in Rust using Axum. Fetches ticker data and calculates Historical Value at Risk (VaR) based on continuous returns and empirical quantiles.',
+		description:
+			'A high-performance backend built in Rust using Axum. Fetches ticker data and calculates Historical Value at Risk (VaR) based on continuous returns and empirical quantiles.',
 		tags: ['Rust', 'Axum', 'API'],
-		isInteractive: true,
+		component: 'RustApiExplorer',
 	},
 	{
 		title: 'Rough Volatility Monte Carlo Pricer',
 		href: 'https://github.com/OskarAllerslev/Rough-Volatility-Monte-Carlo-Pricer',
-		description: 'Advanced derivative pricing framework based on fractional Brownian motions (fBM). Solves Stochastic Differential Equations (SDEs) to capture the roughness of electricity spot prices and financial markets.',
+		description:
+			'Advanced derivative pricing framework based on fractional Brownian motions (fBM). Solves Stochastic Differential Equations (SDEs) to capture the roughness of electricity spot prices and financial markets.',
 		tags: ['C++', 'Math', 'SDEs', 'fBM'],
+		component: 'FbmSimulator',
 	},
 	{
 		title: 'Nitor Energy Forecasting Competition 2026',
 		href: 'https://github.com/OskarAllerslev/Nitor-energy-competition-2026',
-		description: 'Predictive machine learning pipeline forecasting highly volatile energy spot prices across 6 distinct markets. Optimized for RMSE utilizing specialized XGBoost models and domain-specific meteorological features.',
+		description:
+			'Predictive machine learning pipeline forecasting highly volatile energy spot prices across 6 distinct markets. Optimized for RMSE utilizing specialized XGBoost models and domain-specific meteorological features.',
 		tags: ['R', 'tidymodels', 'XGBoost', 'Machine Learning'],
 	},
 	{
 		title: 'Lifepack (R Package)',
 		href: 'https://github.com/OskarAllerslev/lifepack',
-		description: 'Comprehensive R package for life insurance mathematics. Implements robust object-oriented programming (OOP), unit testing, and full roxygen2 documentation for production use.',
+		description:
+			'Comprehensive R package for life insurance mathematics. Implements robust object-oriented programming (OOP), unit testing, and full roxygen2 documentation for production use.',
 		tags: ['R', 'devtools', 'OOP', 'Unit Testing'],
 	},
 ];
@@ -66,14 +77,15 @@ const projects = [
 			</h3>
 			<div class="mt-4 grid gap-8">
 				{
-					projects.map((project) =>
-						project.isInteractive ? (
+					projects.map((project) => {
+						const ProjectComponent = project.component ? components[project.component] : null;
+						return project.component ? (
 							<div class="group rounded-lg border border-zinc-800 bg-zinc-900 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent">
 								<a href={project.href} target="_blank" rel="noopener noreferrer" class="hover:underline">
 									<h4 class="font-bold text-zinc-100">{project.title}</h4>
 								</a>
 								<p class="mt-2 text-zinc-400">{project.description}</p>
-								<VaRCalculator client:load />
+								{ProjectComponent && <ProjectComponent client:load />}
 								<div class="mt-3 flex flex-wrap gap-2">
 									{project.tags.map((tag) => (
 										<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">
@@ -99,8 +111,8 @@ const projects = [
 									))}
 								</div>
 							</a>
-						)
-					)
+						);
+					})
 				}
 			</div>
 		</section>
