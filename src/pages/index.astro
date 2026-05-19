@@ -1,34 +1,61 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import VaRCalculator from '../components/VaRCalculator.jsx';
+import TerminalSession from '../components/TerminalSession.jsx';
+
+const projects = [
+	{
+		title: 'First Rust API (Stock VaR)',
+		href: 'https://github.com/OskarAllerslev/first-rust-api',
+		description: 'A high-performance backend built in Rust using Axum. Fetches ticker data and calculates Historical Value at Risk (VaR) based on continuous returns and empirical quantiles.',
+		tags: ['Rust', 'Axum', 'API'],
+		isInteractive: true,
+	},
+	{
+		title: 'Rough Volatility Monte Carlo Pricer',
+		href: 'https://github.com/OskarAllerslev/Rough-Volatility-Monte-Carlo-Pricer',
+		description: 'Advanced derivative pricing framework based on fractional Brownian motions (fBM). Solves Stochastic Differential Equations (SDEs) to capture the roughness of electricity spot prices and financial markets.',
+		tags: ['C++', 'Math', 'SDEs', 'fBM'],
+	},
+	{
+		title: 'Nitor Energy Forecasting Competition 2026',
+		href: 'https://github.com/OskarAllerslev/Nitor-energy-competition-2026',
+		description: 'Predictive machine learning pipeline forecasting highly volatile energy spot prices across 6 distinct markets. Optimized for RMSE utilizing specialized XGBoost models and domain-specific meteorological features.',
+		tags: ['R', 'tidymodels', 'XGBoost', 'Machine Learning'],
+	},
+	{
+		title: 'Lifepack (R Package)',
+		href: 'https://github.com/OskarAllerslev/lifepack',
+		description: 'Comprehensive R package for life insurance mathematics. Implements robust object-oriented programming (OOP), unit testing, and full roxygen2 documentation for production use.',
+		tags: ['R', 'devtools', 'OOP', 'Unit Testing'],
+	},
+];
 ---
 
 <Layout title="Oskar Allerslev | Portfolio">
 	<main class="container mx-auto max-w-3xl px-6 py-20">
 		<!-- Hero Section -->
 		<section class="mb-16">
-			<h1 class="text-4xl font-bold tracking-tight text-zinc-100 sm:text-5xl">
-				Oskar Allerslev
-			</h1>
+			<h1 class="text-4xl font-bold tracking-tight text-zinc-100 sm:text-5xl">Oskar Allerslev</h1>
 			<h2 class="mt-2 text-lg font-medium tracking-tight text-zinc-300 sm:text-xl">
 				Actuarial Mathematics & Quantitative Infrastructure
 			</h2>
 			<p class="mt-6 max-w-2xl text-base text-zinc-400">
-				Specializing in stochastic modeling, martingale pricing theorems, and high-performance systems programming.
-				Building robust, low-latency infrastructure for quantitative finance and insurance.
+				Specializing in stochastic modeling, martingale pricing theorems, and high-performance systems
+				programming. Building robust, low-latency infrastructure for quantitative finance and insurance.
 			</p>
 		</section>
 
 		<!-- Core Tech Stack -->
 		<section class="mb-16">
-			<h3 class="text-sm font-semibold uppercase tracking-widest text-zinc-500">
-				Core Tech Stack
-			</h3>
+			<h3 class="text-sm font-semibold uppercase tracking-widest text-zinc-500">Core Tech Stack</h3>
 			<div class="mt-4 flex flex-wrap gap-2">
 				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-accent-hover">Rust</span>
 				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-accent-hover">C++</span>
-				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-accent-hover">R (Rcpp / dbplyr)</span>
+				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-accent-hover">R</span>
 				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-accent-hover">Python</span>
 				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-accent-hover">SQL</span>
+				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-accent-hover">XGBoost</span>
 			</div>
 		</section>
 
@@ -38,81 +65,49 @@ import Layout from '../layouts/Layout.astro';
 				Featured Infrastructure
 			</h3>
 			<div class="mt-4 grid gap-8">
-				<!-- Stock VaR Card -->
-				<div class="group rounded-lg border border-zinc-800 bg-zinc-900 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent">
-					<h4 class="font-bold text-zinc-100">Stock Value-at-Risk API</h4>
-					<p class="mt-2 text-zinc-400">
-						API infrastructure for lightning-fast VaR calculations and ticker data handling.
-					</p>
-					<div class="mt-4 space-y-4 font-mono text-sm">
-						<div class="flex items-center gap-4">
-							<label for="ticker" class="text-zinc-400">Ticker:</label>
-							<input type="text" id="ticker" value="MSFT" class="w-24 rounded border-zinc-700 bg-zinc-800 px-2 py-1 text-zinc-100 focus:border-accent focus:ring-accent" />
-						</div>
-						<div class="flex items-center gap-4">
-							<label for="confidence" class="text-zinc-400">Confidence:</label>
-							<select id="confidence" class="w-24 rounded border-zinc-700 bg-zinc-800 px-2 py-1 text-zinc-100 focus:border-accent focus:ring-accent">
-								<option>95%</option>
-								<option>99%</option>
-							</select>
-						</div>
-						<button id="run-var" class="w-full rounded bg-zinc-800 px-3 py-2 text-zinc-300 transition-colors hover:bg-accent hover:text-zinc-900">
-							Run Calculation
-						</button>
-						<div id="var-output" class="mt-4 min-h-[72px] rounded bg-black p-2 text-xs text-zinc-300">
-							<p class="text-zinc-500">[INFO] Ready for calculation.</p>
-						</div>
-					</div>
-					<div class="mt-3">
-						<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">Rust</span>
-					</div>
-				</div>
-				<!-- Electricity Price Modeling Card -->
-				<div class="group rounded-lg border border-zinc-800 bg-zinc-900 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent">
-					<h4 class="font-bold text-zinc-100">Electricity Price Modeling</h4>
-					<p class="mt-2 text-zinc-400">
-						Modeling electricity spot prices using fractional Brownian motions.
-					</p>
-					<div class="mt-4">
-						<svg id="fbm-chart" viewBox="0 0 100 40" class="w-full rounded border border-zinc-800 bg-black"></svg>
-						<div class="mt-3 font-mono text-sm">
-							<label for="hurst" class="text-zinc-400">Hurst Parameter (H): <span id="hurst-value">0.75</span></label>
-							<input type="range" id="hurst" min="0.01" max="0.99" step="0.01" value="0.75" class="w-full" />
-						</div>
-					</div>
-					<div class="mt-3 flex flex-wrap gap-2">
-						<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">R</span>
-						<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">fBM</span>
-						<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">SDEs</span>
-					</div>
-				</div>
-				<!-- Quant Dashboards Card -->
-				<div class="group rounded-lg border border-zinc-800 bg-zinc-900 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent">
-					<h4 class="font-bold text-zinc-100">Quantitative Risk Dashboards</h4>
-					<p class="mt-2 text-zinc-400">
-						High-performance data visualization and data pipelines for risk analysis.
-					</p>
-					<div class="mt-3 flex flex-wrap gap-2">
-						<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">R</span>
-						<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">Shiny</span>
-						<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">C++</span>
-					</div>
-				</div>
+				{
+					projects.map((project) =>
+						project.isInteractive ? (
+							<div class="group rounded-lg border border-zinc-800 bg-zinc-900 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent">
+								<a href={project.href} target="_blank" rel="noopener noreferrer" class="hover:underline">
+									<h4 class="font-bold text-zinc-100">{project.title}</h4>
+								</a>
+								<p class="mt-2 text-zinc-400">{project.description}</p>
+								<VaRCalculator client:load />
+								<div class="mt-3 flex flex-wrap gap-2">
+									{project.tags.map((tag) => (
+										<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">
+											{tag}
+										</span>
+									))}
+								</div>
+							</div>
+						) : (
+							<a
+								href={project.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="block group rounded-lg border border-zinc-800 bg-zinc-900 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent"
+							>
+								<h4 class="font-bold text-zinc-100">{project.title}</h4>
+								<p class="mt-2 text-zinc-400">{project.description}</p>
+								<div class="mt-3 flex flex-wrap gap-2">
+									{project.tags.map((tag) => (
+										<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-accent-hover group-hover:text-accent">
+											{tag}
+										</span>
+									))}
+								</div>
+							</a>
+						)
+					)
+				}
 			</div>
 		</section>
 
 		<!-- Terminal / Contact -->
 		<section>
-			<div id="terminal" class="rounded-lg border border-zinc-800 bg-black p-4 font-mono text-sm text-zinc-300">
-				<div id="terminal-output" class="mb-2"></div>
-				<div class="flex items-center">
-					<span class="text-terminal-green">oskar@oskarallerslev.dev</span>
-					<span class="text-zinc-500">:</span>
-					<span class="text-blue-400">~</span>
-					<span class="text-zinc-500">$</span>
-					<input type="text" id="terminal-input" class="ml-2 flex-1" autofocus />
-				</div>
-			</div>
+			<TerminalSession client:load />
 		</section>
 	</main>
 </Layout>
@@ -131,172 +126,4 @@ import Layout from '../layouts/Layout.astro';
 		outline: none;
 		box-shadow: none;
 	}
-	#hurst {
-		-webkit-appearance: none;
-		appearance: none;
-		height: 4px;
-		background: #3f3f46; /* zinc-700 */
-		border-radius: 2px;
-		outline: none;
-		opacity: 0.7;
-		transition: opacity 0.2s;
-	}
-	#hurst:hover {
-		opacity: 1;
-	}
-	#hurst::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 16px;
-		height: 16px;
-		background: #fafafa; /* zinc-50 */
-		border-radius: 50%;
-		cursor: pointer;
-	}
-	#hurst::-moz-range-thumb {
-		width: 16px;
-		height: 16px;
-		background: #fafafa; /* zinc-50 */
-		border-radius: 50%;
-		cursor: pointer;
-	}
 </style>
-
-<script is:inline>
-	document.addEventListener('DOMContentLoaded', () => {
-		// --- Value-at-Risk Card ---
-		const runVarBtn = document.getElementById('run-var');
-		const varOutput = document.getElementById('var-output');
-		const tickerInput = document.getElementById('ticker');
-		const confidenceSelect = document.getElementById('confidence');
-
-		if (runVarBtn) {
-			runVarBtn.addEventListener('click', () => {
-				const ticker = tickerInput.value || 'MSFT';
-				const confidence = confidenceSelect.value || '95%';
-				varOutput.innerHTML = `<p class="animate-pulse">[INFO] Fetching parameters for ${ticker}...</p>`;
-				setTimeout(() => {
-					varOutput.innerHTML = `<p class="animate-pulse">[INFO] Fetching parameters for ${ticker}...</p><p class="animate-pulse">[INFO] Running Monte Carlo simulation...</p>`;
-					setTimeout(() => {
-						const VaR = (Math.random() * 2 + 1).toFixed(2); // Simulate VaR result
-						varOutput.innerHTML = `<p class="text-terminal-green">[SUCCESS] Calculation complete.</p><p>> Ticker: ${ticker}</p><p>> Confidence: ${confidence}</p><p>> 1-day VaR: $${VaR}M</p>`;
-					}, 1500);
-				}, 1000);
-			});
-		}
-
-		// --- Electricity Price Modeling Card ---
-		const fbmChart = document.getElementById('fbm-chart');
-		const hurstSlider = document.getElementById('hurst');
-		const hurstValue = document.getElementById('hurst-value');
-
-		function generateFBM(H, n) {
-			const rho = 2 ** (2 * H - 1) - 1;
-			const fgn = [];
-			let last_increment = Math.random() - 0.5;
-			fgn.push(last_increment);
-
-			for (let i = 1; i < n; i++) {
-				const innovation = Math.random() - 0.5;
-				const next_increment = rho * last_increment + Math.sqrt(1 - rho * rho) * innovation;
-				fgn.push(next_increment);
-				last_increment = next_increment;
-			}
-
-			const fbm = [0];
-			for (let i = 0; i < n - 1; i++) {
-				fbm.push(fbm[i] + fgn[i]);
-			}
-			return fbm;
-		}
-
-		function drawFBM() {
-			if (!fbmChart || !hurstSlider || !hurstValue) return;
-			const H = parseFloat(hurstSlider.value);
-			hurstValue.textContent = H.toFixed(2);
-
-			const n_points = 100;
-			const path = generateFBM(H, n_points);
-
-			const min = Math.min(...path);
-			const max = Math.max(...path);
-			const range = max - min === 0 ? 1 : max - min;
-
-			const points = path
-				.map((p, i) => {
-					const x = (i / (n_points - 1)) * 100;
-					const y = 38 - ((p - min) / range) * 36; // scale to fit viewbox (2 to 38)
-					return `${x.toFixed(2)},${y.toFixed(2)}`;
-				})
-				.join(' ');
-
-			fbmChart.innerHTML = `<polyline points="${points}" stroke="#a3e635" stroke-width="0.5" fill="none"/>`;
-		}
-
-		if (hurstSlider) {
-			hurstSlider.addEventListener('input', drawFBM);
-			drawFBM(); // Initial draw
-		}
-
-		// --- Interactive Terminal ---
-		const terminalInput = document.getElementById('terminal-input');
-		const terminalOutput = document.getElementById('terminal-output');
-
-		const projects = ['Stock Value-at-Risk API', 'Electricity Price Modeling', 'Quantitative Risk Dashboards'];
-
-		const helpText = `
-        <div class="flex"><span class="w-16 shrink-0 text-zinc-500">GITHUB</span><a href="https://github.com/OskarAllerslev" target="_blank" rel="noopener noreferrer" class="text-accent-hover hover:underline">https://github.com/OskarAllerslev</a></div>
-        <div class="flex"><span class="w-16 shrink-0 text-zinc-500">EMAIL</span><a href="mailto:Oskar.m1660@gmail.com" class="text-accent-hover hover:underline">Oskar.m1660@gmail.com</a></div>
-        <br/>
-        <p>Available commands: 'help', 'projects', 'ls', 'clear'</p>
-    `;
-
-		function executeCommand(command) {
-			let output = '';
-			switch (command.toLowerCase().trim()) {
-				case 'help':
-				case './contact.sh':
-					output = helpText;
-					break;
-				case 'projects':
-				case 'ls':
-					output = projects.map((p) => `<div>- ${p}</div>`).join('');
-					break;
-				case 'clear':
-					terminalOutput.innerHTML = '';
-					return;
-				case '':
-					break;
-				default:
-					output = `<p>command not found: ${command}. Try 'help'.</p>`;
-			}
-
-			const promptLine = `
-            <div class="flex">
-                <div>
-                    <span class="text-terminal-green">oskar@oskarallerslev.dev</span><span class="text-zinc-500">:</span><span class="text-blue-400">~</span><span class="text-zinc-500">$</span>
-                </div>
-                <div class="ml-2 flex-1">${command}</div>
-            </div>`;
-
-			terminalOutput.innerHTML += promptLine + output;
-			terminalOutput.scrollTop = terminalOutput.scrollHeight;
-		}
-
-		if (terminalInput) {
-			executeCommand('./contact.sh');
-
-			terminalInput.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter') {
-					const command = terminalInput.value;
-					executeCommand(command);
-					terminalInput.value = '';
-				}
-			});
-
-			document.getElementById('terminal').addEventListener('click', () => {
-				terminalInput.focus();
-			});
-		}
-	});
-</script>
