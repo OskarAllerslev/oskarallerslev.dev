@@ -101,7 +101,9 @@ export default function FbmSimulator() {
 							fBM, <InlineMath math="B_H(t)" />, can be represented by the Riemann-Liouville
 							fractional integral:
 						</p>
-						<BlockMath math="B_H(t) = \\frac{1}{\Gamma(H + 1/2)} \int_0^t (t-s)^{H - 1/2} dW_s" />
+						<BlockMath
+							math={'\\begin{aligned}B_H(t) = \\frac{1}{\\Gamma(H + 1/2)} \\int_0^t (t-s)^{H - 1/2} dW_s\\end{aligned}'}
+						/>
 						<p className="text-zinc-400">
 							This formulation builds memory into the process, generating the rough and trending
 							paths observed in empirical data.
