@@ -1,5 +1,5 @@
 ---
-import { Analytics } from '@vercel/analytics/react';
+import Analytics from '@vercel/analytics/astro';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 
@@ -25,6 +25,7 @@ const { title } = Astro.props;
 		/>
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<Analytics />
 	</head>
 	<body>
 		<div class="fixed inset-0 overflow-hidden z-[-1] pointer-events-none">
@@ -33,7 +34,6 @@ const { title } = Astro.props;
 			<div class="aurora-emerald absolute h-96 w-96 rounded-full bg-emerald-500 opacity-20 blur-3xl"></div>
 		</div>
 		<slot />
-		<Analytics />
 	</body>
 </html>
 <style is:global>
