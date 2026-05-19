@@ -28,14 +28,14 @@ const paramPlaceholders = {
 const OutputDisplay = ({ data, error }) => {
 	if (error) {
 		return (
-			<pre className="mt-4 w-full overflow-x-auto rounded-md bg-red-950 p-3 text-sm text-red-300">
+			<pre className="mt-4 w-full overflow-x-auto rounded-md bg-red-950/50 p-3 text-sm text-red-300 border border-red-500/20">
 				<code>{error}</code>
 			</pre>
 		);
 	}
 	if (data) {
 		return (
-			<pre className="mt-4 w-full overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-300">
+			<pre className="mt-4 w-full overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-terminal-green border border-zinc-800">
 				<code>{JSON.stringify(data, null, 2)}</code>
 			</pre>
 		);
@@ -87,8 +87,9 @@ export default function RustApiExplorer() {
 			setOutput(data);
 			setLog((prev) => [...prev, { time: new Date(), msg: `[INFO] Request successful (${res.status})` }]);
 		} catch (err) {
-			setError(err.message);
-			setLog((prev) => [...prev, { time: new Date(), msg: `[ERROR] ${err.message}` }]);
+			const errorMessage = '[ERROR] Network error. The Render server might be waking up, or CORS is failing.';
+			setError(errorMessage);
+			setLog((prev) => [...prev, { time: new Date(), msg: errorMessage }]);
 		} finally {
 			setIsLoading(false);
 		}

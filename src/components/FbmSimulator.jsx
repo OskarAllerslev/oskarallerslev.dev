@@ -36,12 +36,37 @@ export default function FbmSimulator() {
 	return (
 		<div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-900 p-4">
 			<div className="border-b border-zinc-800 pb-4">
-				<svg width="100%" viewBox={`0 0 ${width} ${height}`} className="rounded bg-zinc-950">
+				<svg width="100%" viewBox={`0 0 ${width} ${height}`} className="rounded-lg bg-zinc-950 border border-zinc-800">
+					{/* Grid lines */}
+					{[...Array(10)].map((_, i) => (
+						<line
+							key={`v-${i}`}
+							x1={(width / 10) * (i + 1)}
+							y1="0"
+							x2={(width / 10) * (i + 1)}
+							y2={height}
+							stroke="rgba(255, 255, 255, 0.05)"
+							strokeWidth="1"
+						/>
+					))}
+					{[...Array(5)].map((_, i) => (
+						<line
+							key={`h-${i}`}
+							x1="0"
+							y1={(height / 5) * (i + 1)}
+							x2={width}
+							y2={(height / 5) * (i + 1)}
+							stroke="rgba(255, 255, 255, 0.05)"
+							strokeWidth="1"
+						/>
+					))}
+					{/* Path */}
 					<polyline
 						points={pathData}
 						fill="none"
 						stroke="rgb(20 184 166)" // teal-500
 						strokeWidth="1.5"
+						style={{ filter: 'drop-shadow(0 0 5px rgb(20 184 166 / 0.7))' }}
 					/>
 				</svg>
 				<div className="mt-2 rounded-md border border-amber-600/30 bg-amber-950/20 p-2 text-center text-xs text-amber-400">
@@ -74,7 +99,7 @@ export default function FbmSimulator() {
 				</button>
 			</div>
 
-			<div className="mt-6 border-t border-zinc-800 pt-4">
+			<div className="mt-6 rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
 				<h5 className="text-base font-semibold text-zinc-100">Theory & Methodology</h5>
 				<p className="mt-2 text-sm text-zinc-400">
 					Financial volatility and electricity spot prices often exhibit "roughness," a statistical
