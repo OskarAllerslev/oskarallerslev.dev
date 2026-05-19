@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { BlockMath, InlineMath } from 'react-katex';
+import pkg from 'react-katex';
+const { BlockMath, InlineMath } = pkg;
 // A simple function to generate an approximate Fractional Brownian Motion path
 // This is for visualization purposes and not a rigorous simulation.
 const generateFbmPath = (hurst, points, width, height) => {
