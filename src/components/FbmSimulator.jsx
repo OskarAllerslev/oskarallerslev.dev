@@ -20,7 +20,7 @@ export default function FbmSimulator() {
 						The engine simulates the coupled Stochastic Differential Equations for the asset price{' '}
 						<InlineMath math={'S_t'} /> and its variance <InlineMath math={'V_t'} />:
 					</p>
-					<BlockMath math={'dS_t = S_t \\sqrt{V_t} dW_t'} />
+					<BlockMath math={"dS_t = \\mu S_t dt + \\sqrt{V_t} S_t dW_t^1"} />
 					<BlockMath math={'V_t = V_0 \\exp\\left( \\eta B_H(t) - \\frac{1}{2} \\eta^2 t^{2H} \\right)'} />
 				</div>
 				<div>
