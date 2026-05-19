@@ -87,29 +87,36 @@ export default function TerminalSession() {
 	};
 
 	return (
-		<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-sm text-zinc-300 h-[600px] flex flex-col">
-			<div ref={terminalBodyRef} className="flex-grow overflow-y-auto no-scrollbar">
-				{history.map((entry, index) => (
-					<div key={index} className="mb-2">
-						{entry.command && <Prompt>{entry.command}</Prompt>}
-						<div
-							className="whitespace-pre-wrap"
-							dangerouslySetInnerHTML={{ __html: entry.output }}
+		<>
+			<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-[13px] tracking-wide text-zinc-300 h-[600px] flex flex-col">
+				<div ref={terminalBodyRef} className="flex-grow overflow-y-auto no-scrollbar">
+					{history.map((entry, index) => (
+						<div key={index} className="mb-2">
+							{entry.command && <Prompt>{entry.command}</Prompt>}
+							<div
+								className="whitespace-pre-wrap"
+								dangerouslySetInnerHTML={{ __html: entry.output }}
+							/>
+						</div>
+					))}
+				</div>
+				<form onSubmit={handleSubmit} className="mt-2">
+					<Prompt>
+						<input
+							type="text"
+							className="w-full bg-transparent border-none outline-none"
+							value={input}
+							onChange={(e) => setInput(e.target.value)}
+							autoFocus
 						/>
-					</div>
-				))}
+					</Prompt>
+				</form>
 			</div>
-			<form onSubmit={handleSubmit} className="mt-2">
-				<Prompt>
-					<input
-						type="text"
-						className="w-full bg-transparent border-none outline-none"
-						value={input}
-						onChange={(e) => setInput(e.target.value)}
-						autoFocus
-					/>
-				</Prompt>
-			</form>
-		</div>
+			<div className="bg-zinc-900/40 border border-zinc-800/60 p-3 rounded-md mt-3 text-center">
+				<p className="text-xs text-zinc-400">
+					Non-technical user? Type "help" in the prompt above to extract full CV details.
+				</p>
+			</div>
+		</>
 	);
 }

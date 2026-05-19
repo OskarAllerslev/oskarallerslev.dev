@@ -51,7 +51,7 @@ const DataChart = ({ data }) => {
 			{/* Gridlines and Ticks */}
 			{yTickPositions.map((y, i) => (
 				<g key={`y-grid-${i}`}>
-					<line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#27272a" strokeWidth="1" />
+					<line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#27272a" strokeWidth="1" strokeDasharray="2 2" />
 					<line x1={padding.left - 4} y1={y} x2={padding.left} y2={y} stroke="#52525b" strokeWidth="1" />
 					{ i < yTicks &&
 						<line x1={padding.left} y1={y - (yTickPositions[0] - yTickPositions[1])/2} x2={width - padding.right} y2={y - (yTickPositions[0] - yTickPositions[1])/2} stroke="#27272a" strokeWidth="1" strokeDasharray="2,3" />
@@ -63,7 +63,7 @@ const DataChart = ({ data }) => {
 			))}
 			{xTickPositions.map((x, i) => (
 				<g key={`x-grid-${i}`}>
-					<line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="#27272a" strokeWidth="1" />
+					<line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="#27272a" strokeWidth="1" strokeDasharray="2 2" />
 					<line x1={x} y1={height-padding.bottom} x2={x} y2={height - padding.bottom + 4} stroke="#52525b" strokeWidth="1" />
 					<text x={x} y={height - padding.bottom + 15} textAnchor="middle" fill="#a1a1aa" fontSize="10">
 						{new Date(data[xTickIndices[i]].date).toLocaleDateString('en-CA')}
