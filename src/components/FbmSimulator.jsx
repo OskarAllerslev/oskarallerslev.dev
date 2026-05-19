@@ -1,135 +1,48 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React from 'react';
 import pkg from 'react-katex';
 const { BlockMath, InlineMath } = pkg;
 
-const generatePath = (H, length) => {
-	const path = new Array(length).fill(0);
-	for (let i = 1; i < length; i++) {
-		const noise = Math.random() - 0.5;
-		let step;
-		if (H < 0.5) {
-			const reversion = 1 - 2 * H;
-			step = -reversion * path[i - 1] + noise;
-		} else if (H > 0.5) {
-			const trend = 2 * H - 1;
-			const momentum = i > 1 ? path[i - 1] - path[i - 2] : 0;
-			step = trend * momentum + noise;
-		} else {
-			step = noise;
-		}
-		path[i] = path[i - 1] + step;
-	}
-	return path;
-};
-
 export default function FbmSimulator() {
-	const [H, setH] = useState(0.2);
-	const [seed, setSeed] = useState(0);
-
-	const width = 600;
-	const height = 300;
-	const points = 200;
-	const padding = { top: 20, right: 20, bottom: 20, left: 40 };
-
-	const { pathData, minVal, maxVal } = useMemo(() => {
-		const rawPath = generatePath(H, points);
-		const minVal = Math.min(...rawPath);
-		const maxVal = Math.max(...rawPath);
-		const yRange = maxVal - minVal || 1;
-
-		const pathString = rawPath
-			.map((val, i) => {
-				const x = padding.left + (i / (points - 1)) * (width - padding.left - padding.right);
-				const y =
-					height -
-					padding.bottom -
-					((val - minVal) / yRange) * (height - padding.top - padding.bottom);
-				return `${x},${y}`;
-			})
-			.join(' ');
-		return { pathData: pathString, minVal, maxVal };
-	}, [H, seed]);
-
 	return (
-		<div className="mt-4">
-			<div className="border-b border-zinc-800 pb-4">
-				<svg
-					width="100%"
-					viewBox={`0 0 ${width} ${height}`}
-					className="rounded-lg bg-zinc-950 border border-zinc-800"
-				>
-					{/* Axes */}
-					<line x1={padding.left} y1={padding.top} x2={padding.left} y2={height - padding.bottom} stroke="#52525b" strokeWidth="1" />
-					<line x1={padding.left} y1={height - padding.bottom} x2={width - padding.right} y2={height - padding.bottom} stroke="#52525b" strokeWidth="1" />
-
-					{/* Y-Axis Labels */}
-					<text x={padding.left - 8} y={padding.top + 4} textAnchor="end" fill="#a1a1aa" fontSize="10">
-						{maxVal.toFixed(2)}
-					</text>
-					<text x={padding.left - 8} y={height - padding.bottom} textAnchor="end" fill="#a1a1aa" fontSize="10">
-						{minVal.toFixed(2)}
-					</text>
-
-					{/* Path */}
-					<polyline
-						points={pathData}
-						fill="none"
-						stroke="#06b6d4"
-						strokeWidth="2"
-						style={{ filter: 'drop-shadow(0 0 8px rgba(6,182,212,0.8))' }}
-					/>
-				</svg>
-				<div className="mt-2 rounded-md border border-amber-600/30 bg-amber-950/20 p-2 text-center text-xs text-amber-400">
-					<span className="font-bold">[PROXY MODE]</span> This is a client-side JavaScript
-					visualization. The actual high-performance Monte Carlo SDE engine runs in C++.
+		<div className="mt-4 border-t border-zinc-800 pt-4">
+			<h5 className="text-base font-semibold text-zinc-100">
+				C++ Engine: Methodology & Implementation
+			</h5>
+			<div className="mt-4 space-y-4 text-sm text-zinc-400">
+				<p>
+					The underlying Monte Carlo engine is a high-performance C++ application designed for pricing
+					derivatives under rough stochastic volatility models, such as the Rough Bergomi model. It
+					leverages fractional Brownian motion (fBM) to capture empirically observed volatility dynamics.
+				</p>
+				<div>
+					<h6 className="font-semibold text-zinc-300">Coupled SDE System</h6>
+					<p>
+						The engine simulates the coupled Stochastic Differential Equations for the asset price{' '}
+						<InlineMath math="S_t" /> and its variance <InlineMath math="V_t" />:
+					</p>
+					<BlockMath math="dS_t = S_t \\sqrt{V_t} dW_t" />
+					<BlockMath math={'V_t = V_0 \\exp\\left( \\eta B_H(t) - \\frac{1}{2} \\eta^2 t^{2H} \\right)'} />
 				</div>
-			</div>
-
-			<div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
-				<div className="flex-1">
-					<label htmlFor="hurst-slider" className="block text-sm font-medium text-zinc-300">
-						Hurst Parameter (H): {H.toFixed(2)}
-					</label>
-					<input
-						id="hurst-slider"
-						type="range"
-						min="0.05"
-						max="0.95"
-						step="0.01"
-						value={H}
-						onChange={(e) => setH(parseFloat(e.target.value))}
-						className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-700 accent-teal-500"
+				<div>
+					<h6 className="font-semibold text-zinc-300">fBM Simulation for H &lt; 0.5</h6>
+					<p>
+						Simulating the fractional Brownian motion <InlineMath math="B_H(t)" /> for a Hurst parameter{' '}
+						<InlineMath math="H < 0.5" /> requires careful consideration of its auto-covariance structure. The
+						covariance matrix <InlineMath math="\Sigma" /> for a time grid{' '}
+						<InlineMath math="t_1, t_2, \dots, t_n" /> is given by:
+					</p>
+					<BlockMath
+						math={
+							'\\Sigma_{ij} = \\mathbb{E}[B_H(t_i)B_H(t_j)] = \\frac{1}{2}(t_i^{2H} + t_j^{2H} - |t_i - t_j|^{2H})'
+						}
 					/>
-				</div>
-				<button
-					onClick={() => setSeed((s) => s + 1)}
-					className="rounded-md bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-700"
-				>
-					Regenerate Path
-				</button>
-			</div>
-
-			<div className="mt-6 border-t border-zinc-800 pt-4">
-				<h5 className="text-base font-semibold text-zinc-100">Rough Volatility Model</h5>
-				<div className="mt-4 space-y-4 text-sm text-zinc-400">
-					<div>
-						<p>
-							Asset price dynamics under a rough stochastic volatility model (like Rough Bergomi)
-							follow:
-						</p>
-						<BlockMath math="dS_t = S_t \\sqrt{V_t} dW_t" />
-						<p>
-							The variance process <InlineMath math="V_t" /> is driven by a fractional Brownian
-							motion:
-						</p>
-						<BlockMath math={'V_t = V_0 \\exp\\left( \\eta B_H(t) - \\frac{1}{2} \\eta^2 t^{2H} \\right)'} />
-						<p className="mt-2">
-							The variance process is driven by a fractional Brownian motion{' '}
-							<InlineMath math="B_H(t)" /> with <InlineMath math="H < 0.5" />, capturing the
-							rough volatility empirically observed in energy markets. Simulation requires exact
-							Cholesky decomposition of the auto-covariance matrix.
-						</p>
-					</div>
+					<p className="mt-2">
+						To generate valid paths, the engine performs an exact Cholesky decomposition of this dense
+						covariance matrix, <InlineMath math="\Sigma = LL^T" />. Correlated random variates are then
+						generated by transforming a vector of independent standard normal variables{' '}
+						<InlineMath math="Z" /> via <InlineMath math="X = LZ" />. This method is computationally
+						intensive but ensures the statistical integrity of the generated rough volatility paths.
+					</p>
 				</div>
 			</div>
 		</div>

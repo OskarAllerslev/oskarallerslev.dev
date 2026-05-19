@@ -19,7 +19,9 @@ const paramInputs = {
 const DataChart = ({ data }) => {
 	const width = 500;
 	const height = 250;
-	const padding = { top: 20, right: 20, bottom: 20, left: 50 };
+	const padding = { top: 20, right: 20, bottom: 30, left: 50 };
+	const plotWidth = width - padding.left - padding.right;
+	const plotHeight = height - padding.top - padding.bottom;
 
 	if (!data || !Array.isArray(data) || data.length === 0 || typeof data[0].close !== 'number') return null;
 
@@ -28,42 +30,48 @@ const DataChart = ({ data }) => {
 	const maxPrice = Math.max(...prices);
 	const priceRange = maxPrice - minPrice || 1;
 
-	const points = prices
-		.map((price, i) => {
-			const x = padding.left + (i / (prices.length - 1)) * (width - padding.left - padding.right);
-			const y =
-				height -
-				padding.bottom -
-				((price - minPrice) / priceRange) * (height - padding.top - padding.bottom);
+	// Y-axis ticks
+	const yTicks = 4;
+	const yTickValues = Array.from({ length: yTicks + 1 }, (_, i) => minPrice + (priceRange / yTicks) * i);
+	const yTickPositions = yTickValues.map(val => height - padding.bottom - ((val - minPrice) / priceRange) * plotHeight);
+
+	// X-axis ticks
+	const xTicks = 4;
+	const xTickIndices = Array.from({ length: xTicks + 1 }, (_, i) => Math.floor((i / xTicks) * (prices.length - 1)));
+	const xTickPositions = xTickIndices.map(i => padding.left + (i / (prices.length - 1)) * plotWidth);
+	
+	const points = prices.map((price, i) => {
+			const x = padding.left + (i / (prices.length - 1)) * plotWidth;
+			const y = height - padding.bottom - ((price - minPrice) / priceRange) * plotHeight;
 			return `${x},${y}`;
-		})
-		.join(' ');
+		}).join(' ');
 
 	return (
-		<svg
-			width="100%"
-			viewBox={`0 0 ${width} ${height}`}
-			className="mt-2 rounded-lg bg-zinc-950 border border-zinc-800"
-		>
-			{/* Axes */}
-			<line x1={padding.left} y1={padding.top} x2={padding.left} y2={height - padding.bottom} stroke="#52525b" strokeWidth="1" />
-			<line x1={padding.left} y1={height - padding.bottom} x2={width - padding.right} y2={height - padding.bottom} stroke="#52525b" strokeWidth="1" />
+		<svg width="100%" viewBox={`0 0 ${width} ${height}`} className="mt-2 rounded-lg bg-zinc-950 border border-zinc-800 font-mono">
+			{/* Gridlines and Ticks */}
+			{yTickPositions.map((y, i) => (
+				<g key={`y-grid-${i}`}>
+					<line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#27272a" strokeWidth="1" />
+					<line x1={padding.left - 4} y1={y} x2={padding.left} y2={y} stroke="#52525b" strokeWidth="1" />
+					{ i < yTicks &&
+						<line x1={padding.left} y1={y - (yTickPositions[0] - yTickPositions[1])/2} x2={width - padding.right} y2={y - (yTickPositions[0] - yTickPositions[1])/2} stroke="#27272a" strokeWidth="1" strokeDasharray="2,3" />
+					}
+					<text x={padding.left - 8} y={y + 3} textAnchor="end" fill="#a1a1aa" fontSize="10">
+						{yTickValues[i].toFixed(2)}
+					</text>
+				</g>
+			))}
+			{xTickPositions.map((x, i) => (
+				<g key={`x-grid-${i}`}>
+					<line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="#27272a" strokeWidth="1" />
+					<line x1={x} y1={height-padding.bottom} x2={x} y2={height - padding.bottom + 4} stroke="#52525b" strokeWidth="1" />
+					<text x={x} y={height - padding.bottom + 15} textAnchor="middle" fill="#a1a1aa" fontSize="10">
+						{new Date(data[xTickIndices[i]].date).toLocaleDateString('en-CA')}
+					</text>
+				</g>
+			))}
 
-			{/* Y-Axis Labels */}
-			<text x={padding.left - 8} y={padding.top + 4} textAnchor="end" fill="#a1a1aa" fontSize="10">
-				{maxPrice.toFixed(2)}
-			</text>
-			<text x={padding.left - 8} y={height - padding.bottom} textAnchor="end" fill="#a1a1aa" fontSize="10">
-				{minPrice.toFixed(2)}
-			</text>
-
-			<polyline
-				fill="none"
-				stroke="#06b6d4"
-				strokeWidth="1.5"
-				points={points}
-				style={{ filter: 'drop-shadow(0 0 8px rgba(6,182,212,0.5))' }}
-			/>
+			<polyline fill="none" stroke="#06b6d4" strokeWidth="1.5" points={points} style={{ filter: 'drop-shadow(0 0 8px rgba(6,182,212,0.5))' }} />
 		</svg>
 	);
 };
