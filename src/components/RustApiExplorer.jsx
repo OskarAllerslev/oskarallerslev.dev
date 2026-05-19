@@ -98,7 +98,7 @@ export default function RustApiExplorer() {
 	const currentParams = endpoints[selectedEndpoint].params;
 
 	return (
-		<div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-900 p-4 font-mono">
+		<div className="mt-4 font-mono">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-center">
 				<div className="flex-1">
 					<label htmlFor="endpoint-select" className="text-sm font-semibold text-zinc-400">

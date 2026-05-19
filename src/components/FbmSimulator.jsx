@@ -34,7 +34,7 @@ export default function FbmSimulator() {
 	const pathData = useMemo(() => generateFbmPath(hurst, points, width, height), [hurst, pathKey]);
 
 	return (
-		<div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-900 p-4">
+		<div className="mt-4">
 			<div className="border-b border-zinc-800 pb-4">
 				<svg width="100%" viewBox={`0 0 ${width} ${height}`} className="rounded-lg bg-zinc-950 border border-zinc-800">
 					{/* Grid lines */}
