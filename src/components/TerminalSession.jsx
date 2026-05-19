@@ -88,7 +88,7 @@ export default function TerminalSession() {
 
 	return (
 		<>
-			<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-xs tracking-wide text-zinc-300 h-[600px] flex flex-col">
+			<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-[13px] tracking-wide text-zinc-300 h-[600px] flex flex-col">
 				<div ref={terminalBodyRef} className="flex-grow overflow-y-auto no-scrollbar">
 					{history.map((entry, index) => (
 						<div key={index} className="mb-2">
