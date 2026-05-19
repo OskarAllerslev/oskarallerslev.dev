@@ -61,7 +61,7 @@ export default function FbmSimulator() {
 						max="0.95"
 						step="0.01"
 						value={hurst}
-						onChange={(e) => setHurst(e.target.value)}
+						onChange={(e) => setHurst(parseFloat(e.target.value))}
 						className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-700 accent-teal-500"
 					/>
 				</div>
