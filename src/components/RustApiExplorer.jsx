@@ -1,101 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const API_BASE_URL = 'https://oskar-rust-api.onrender.com';
 
-const endpoints = {
+const endpointsConfig = {
 	is_alive: { path: '/is_alive', params: [] },
-	data: { path: '/data/{ticker}', params: ['ticker'] },
-	ema: { path: '/ema/{ticker}', params: ['ticker', 'window_size'] },
-	var: { path: '/var/{ticker}', params: ['ticker', 'alpha', 'interval', 'range'] },
+	data: { path: '/data/', params: ['ticker', 'interval', 'range'] },
+	ema: { path: '/ema/', params: ['ticker', 'interval', 'range', 'smoothing'] },
+	var: { path: '/var/', params: ['ticker', 'interval', 'range', 'alpha'] },
 };
 
-const defaultParams = {
-	ticker: 'AAPL',
-	window_size: '20',
-	alpha: '0.95',
-	interval: '1d',
-	range: '1y',
-};
-
-const paramPlaceholders = {
-	ticker: 'e.g., AAPL',
-	window_size: 'e.g., 20',
-	alpha: 'e.g., 0.95',
-	interval: 'e.g., 1d',
-	range: 'e.g., 1y',
-};
-
-const OutputDisplay = ({ data, error }) => {
-	if (error) {
-		return (
-			<pre className="mt-4 w-full overflow-x-auto rounded-md bg-red-950/50 p-3 text-sm text-red-300 border border-red-500/20">
-				<code>{error}</code>
-			</pre>
-		);
-	}
-	if (data) {
-		return (
-			<pre className="mt-4 w-full overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-terminal-green border border-zinc-800">
-				<code>{JSON.stringify(data, null, 2)}</code>
-			</pre>
-		);
-	}
-	return null;
+const paramInputs = {
+	ticker: { label: 'Ticker', type: 'text' },
+	interval: { label: 'Interval', type: 'text' },
+	range: { label: 'Range', type: 'text' },
+	smoothing: { label: 'Smoothing Constant', type: 'number', step: '0.01' },
+	alpha: { label: 'Alpha (VaR Quantile)', type: 'number', step: '0.005' },
 };
 
 export default function RustApiExplorer() {
-	const [selectedEndpoint, setSelectedEndpoint] = useState('is_alive');
-	const [params, setParams] = useState(defaultParams);
+	const [endpoint, setEndpoint] = useState('is_alive');
+	const [params, setParams] = useState({
+		ticker: 'AAPL',
+		interval: '1d',
+		range: '1y',
+		smoothing: 0.2,
+		alpha: 0.99,
+	});
 	const [isLoading, setIsLoading] = useState(false);
 	const [output, setOutput] = useState(null);
 	const [error, setError] = useState(null);
 	const [log, setLog] = useState([]);
+	const [urlToCall, setUrlToCall] = useState('');
+
+	useEffect(() => {
+		const config = endpointsConfig[endpoint];
+		let url = `${API_BASE_URL}${config.path}`;
+		const queryParams = new URLSearchParams();
+
+		if (config.params.includes('ticker')) {
+			url += params.ticker;
+		}
+		if (config.params.includes('interval')) {
+			queryParams.append('interval', params.interval);
+		}
+		if (config.params.includes('range')) {
+			queryParams.append('range', params.range);
+		}
+		if (config.params.includes('smoothing')) {
+			queryParams.append('smoothing_constant', params.smoothing);
+		}
+		if (config.params.includes('alpha')) {
+			queryParams.append('alpha', params.alpha);
+		}
+
+		const queryString = queryParams.toString();
+		if (queryString) {
+			url += `?${queryString}`;
+		}
+
+		setUrlToCall(url);
+	}, [endpoint, params]);
 
 	const handleParamChange = (e) => {
-		const { name, value } = e.target;
-		setParams((prev) => ({ ...prev, [name]: value }));
+		const { name, value, type } = e.target;
+		setParams((prev) => ({
+			...prev,
+			[name]: type === 'number' ? parseFloat(value) : value,
+		}));
 	};
 
 	const handleSendRequest = async () => {
 		setIsLoading(true);
 		setOutput(null);
 		setError(null);
-		setLog([{ time: new Date(), msg: '[INFO] Waking up Render server... (Cold starts take 30-50s)' }]);
-
-		const endpointInfo = endpoints[selectedEndpoint];
-		let url = endpointInfo.path;
-
-		endpointInfo.params.forEach((param) => {
-			url = url.replace(`{${param}}`, params[param]);
-		});
-
-		// Handle query params for ema and var
-		if (selectedEndpoint === 'ema') {
-			url += `?window_size=${params.window_size}`;
-		} else if (selectedEndpoint === 'var') {
-			url += `?alpha=${params.alpha}&interval=${params.interval}&range=${params.range}`;
-		}
-
-		const fullUrl = `${API_BASE_URL}${url}`;
+		setLog([`[INFO] Calling ${urlToCall}...`]);
 
 		try {
-			const res = await fetch(fullUrl);
+			const res = await fetch(urlToCall, { mode: 'cors' });
 			const data = await res.json();
 			if (!res.ok) {
 				throw new Error(data.error || `HTTP error! status: ${res.status}`);
 			}
 			setOutput(data);
-			setLog((prev) => [...prev, { time: new Date(), msg: `[INFO] Request successful (${res.status})` }]);
+			setLog((prev) => [...prev, `[INFO] Request successful (${res.status})`]);
 		} catch (err) {
-			const errorMessage = '[ERROR] Network error. The Render server might be waking up, or CORS is failing.';
+			const errorMessage = `[ERROR] Network error. The Render server might be waking up, or CORS is failing. (${err.message})`;
 			setError(errorMessage);
-			setLog((prev) => [...prev, { time: new Date(), msg: errorMessage }]);
+			setLog((prev) => [...prev, errorMessage]);
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const currentParams = endpoints[selectedEndpoint].params;
+	const currentParams = endpointsConfig[endpoint].params;
 
 	return (
 		<div className="mt-4 font-mono">
@@ -106,13 +103,13 @@ export default function RustApiExplorer() {
 					</label>
 					<select
 						id="endpoint-select"
-						value={selectedEndpoint}
-						onChange={(e) => setSelectedEndpoint(e.target.value)}
+						value={endpoint}
+						onChange={(e) => setEndpoint(e.target.value)}
 						className="mt-1 block w-full rounded-md border-zinc-700 bg-zinc-800 px-3 py-2 text-zinc-100 focus:border-terminal-green focus:ring-terminal-green"
 					>
-						{Object.keys(endpoints).map((key) => (
+						{Object.keys(endpointsConfig).map((key) => (
 							<option key={key} value={key}>
-								{endpoints[key].path}
+								{endpointsConfig[key].path}
 							</option>
 						))}
 					</select>
@@ -128,36 +125,53 @@ export default function RustApiExplorer() {
 
 			{currentParams.length > 0 && (
 				<div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-					{currentParams.map((param) => (
-						<div key={param}>
-							<label htmlFor={param} className="block text-xs font-semibold uppercase text-zinc-500">
-								{param}
-							</label>
-							<input
-								type="text"
-								name={param}
-								id={param}
-								value={params[param]}
-								onChange={handleParamChange}
-								placeholder={paramPlaceholders[param]}
-								className="mt-1 block w-full rounded-md border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 focus:border-terminal-green focus:ring-terminal-green"
-							/>
-						</div>
-					))}
+					{currentParams.map((param) => {
+						const inputConfig = paramInputs[param];
+						return (
+							<div key={param}>
+								<label htmlFor={param} className="block text-xs font-semibold uppercase text-zinc-500">
+									{inputConfig.label}
+								</label>
+								<input
+									type={inputConfig.type}
+									name={param}
+									id={param}
+									value={params[param]}
+									onChange={handleParamChange}
+									step={inputConfig.step || null}
+									className="mt-1 block w-full rounded-md border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 focus:border-terminal-green focus:ring-terminal-green"
+								/>
+							</div>
+						);
+					})}
 				</div>
 			)}
 
+			<div className="mt-4 border-t border-zinc-800 pt-4">
+				<h5 className="text-sm font-semibold text-zinc-400">Request URL</h5>
+				<pre className="mt-2 w-full overflow-x-auto rounded-md bg-zinc-950 p-3 text-xs text-zinc-400 border border-zinc-800">
+					<code>{urlToCall}</code>
+				</pre>
+			</div>
+
 			{(isLoading || output || error) && (
-				<div className="mt-4 border-t border-zinc-800 pt-4">
+				<div className="mt-4">
 					<h5 className="text-sm font-semibold text-zinc-400">Response</h5>
-					{log.length > 0 && (
-						<div className="mt-2 text-xs text-terminal-green/80">
-							{log.map((l) => (
-								<div key={l.time.toISOString()}>{l.msg}</div>
-							))}
-						</div>
+					<div className="mt-2 text-xs text-terminal-green/80">
+						{log.map((l, i) => (
+							<div key={i}>{l}</div>
+						))}
+					</div>
+					{error && (
+						<pre className="mt-2 w-full overflow-x-auto rounded-md bg-red-950/50 p-3 text-sm text-red-300 border border-red-500/20">
+							<code>{error}</code>
+						</pre>
 					)}
-					<OutputDisplay data={output} error={error} />
+					{output && (
+						<pre className="mt-2 w-full overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-terminal-green border border-zinc-800">
+							<code>{JSON.stringify(output, null, 2)}</code>
+						</pre>
+					)}
 				</div>
 			)}
 		</div>
