@@ -88,7 +88,7 @@ export default function TerminalSession() {
 
 	return (
 		<>
-			<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-[13px] tracking-wide text-zinc-300 h-[600px] flex flex-col">
+			<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-xs tracking-wide text-zinc-300 h-[600px] flex flex-col">
 				<div ref={terminalBodyRef} className="flex-grow overflow-y-auto no-scrollbar">
 					{history.map((entry, index) => (
 						<div key={index} className="mb-2">
@@ -112,10 +112,9 @@ export default function TerminalSession() {
 					</Prompt>
 				</form>
 			</div>
-			<div className="bg-zinc-900/40 border border-zinc-800/60 p-3 rounded-md mt-3 text-center">
-				<p className="text-xs text-zinc-400">
-					Non-technical user? Type "help" in the prompt above to extract full CV details.
-				</p>
+			<div className="mt-3 rounded-md border border-zinc-800/60 bg-zinc-900/40 p-3 text-center text-xs text-zinc-400">
+				Non-technical user? Type <span className="text-terminal-green">help</span> in the prompt
+				above.
 			</div>
 		</>
 	);
