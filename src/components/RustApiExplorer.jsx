@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 const API_BASE_URL = 'https://oskar-rust-api.onrender.com';
 
 const endpointsConfig = {
-	is_alive: { path: '/is_alive', params: [] },
 	data: { path: '/data/', params: ['ticker', 'interval', 'range'] },
 	ema: { path: '/ema/', params: ['ticker', 'interval', 'range', 'smoothing'] },
 	var: { path: '/var/', params: ['ticker', 'interval', 'range', 'alpha'] },
@@ -17,8 +16,40 @@ const paramInputs = {
 	alpha: { label: 'Alpha (VaR Quantile)', type: 'number', step: '0.005' },
 };
 
+const DataChart = ({ data }) => {
+	const width = 500;
+	const height = 250;
+	const padding = 20;
+
+	if (!data || !Array.isArray(data) || data.length === 0 || !data[0].close) return null;
+
+	const prices = data.map((d) => d.close);
+	const minPrice = Math.min(...prices);
+	const maxPrice = Math.max(...prices);
+	const priceRange = maxPrice - minPrice || 1;
+
+	const points = prices
+		.map((price, i) => {
+			const x = padding + (i / (prices.length - 1)) * (width - padding * 2);
+			const y =
+				height - padding - ((price - minPrice) / priceRange) * (height - padding * 2);
+			return `${x},${y}`;
+		})
+		.join(' ');
+
+	return (
+		<svg
+			width="100%"
+			viewBox={`0 0 ${width} ${height}`}
+			className="mt-2 rounded-lg bg-zinc-950 border border-zinc-800"
+		>
+			<polyline fill="none" stroke="#06b6d4" strokeWidth="1.5" points={points} />
+		</svg>
+	);
+};
+
 export default function RustApiExplorer() {
-	const [endpoint, setEndpoint] = useState('is_alive');
+	const [endpoint, setEndpoint] = useState('data');
 	const [params, setParams] = useState({
 		ticker: 'AAPL',
 		interval: '1d',
@@ -40,24 +71,14 @@ export default function RustApiExplorer() {
 		if (config.params.includes('ticker')) {
 			url += params.ticker;
 		}
-		if (config.params.includes('interval')) {
-			queryParams.append('interval', params.interval);
-		}
-		if (config.params.includes('range')) {
-			queryParams.append('range', params.range);
-		}
-		if (config.params.includes('smoothing')) {
+		if (config.params.includes('interval')) queryParams.append('interval', params.interval);
+		if (config.params.includes('range')) queryParams.append('range', params.range);
+		if (config.params.includes('smoothing'))
 			queryParams.append('smoothing_constant', params.smoothing);
-		}
-		if (config.params.includes('alpha')) {
-			queryParams.append('alpha', params.alpha);
-		}
+		if (config.params.includes('alpha')) queryParams.append('alpha', params.alpha);
 
 		const queryString = queryParams.toString();
-		if (queryString) {
-			url += `?${queryString}`;
-		}
-
+		if (queryString) url += `?${queryString}`;
 		setUrlToCall(url);
 	}, [endpoint, params]);
 
@@ -78,9 +99,7 @@ export default function RustApiExplorer() {
 		try {
 			const res = await fetch(urlToCall, { mode: 'cors' });
 			const data = await res.json();
-			if (!res.ok) {
-				throw new Error(data.error || `HTTP error! status: ${res.status}`);
-			}
+			if (!res.ok) throw new Error(data.error || `HTTP error! status: ${res.status}`);
 			setOutput(data);
 			setLog((prev) => [...prev, `[INFO] Request successful (${res.status})`]);
 		} catch (err) {
@@ -129,7 +148,10 @@ export default function RustApiExplorer() {
 						const inputConfig = paramInputs[param];
 						return (
 							<div key={param}>
-								<label htmlFor={param} className="block text-xs font-semibold uppercase text-zinc-500">
+								<label
+									htmlFor={param}
+									className="block text-xs font-semibold uppercase text-zinc-500"
+								>
 									{inputConfig.label}
 								</label>
 								<input
@@ -167,7 +189,8 @@ export default function RustApiExplorer() {
 							<code>{error}</code>
 						</pre>
 					)}
-					{output && (
+					{output && endpoint === 'data' && <DataChart data={output} />}
+					{output && (endpoint === 'ema' || endpoint === 'var') && (
 						<pre className="mt-2 w-full overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-terminal-green border border-zinc-800">
 							<code>{JSON.stringify(output, null, 2)}</code>
 						</pre>

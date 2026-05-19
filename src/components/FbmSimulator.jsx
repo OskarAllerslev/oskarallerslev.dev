@@ -1,27 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import pkg from 'react-katex';
 const { BlockMath, InlineMath } = pkg;
 
-// Path generation logic
-const generateFbmPath = (H, length) => {
+const generatePath = (H, length) => {
 	const path = new Array(length).fill(0);
-	const mean = 0;
-
 	for (let i = 1; i < length; i++) {
 		const noise = Math.random() - 0.5;
 		let step;
-
 		if (H < 0.5) {
-			// Mean-reverting
-			const reversion_strength = 1 - 2 * H; // Stronger as H -> 0
-			step = -reversion_strength * (path[i - 1] - mean) + noise;
+			const reversion = 1 - 2 * H;
+			step = -reversion * path[i - 1] + noise;
 		} else if (H > 0.5) {
-			// Trending / Momentum
-			const trend_strength = 2 * H - 1; // Stronger as H -> 1
+			const trend = 2 * H - 1;
 			const momentum = i > 1 ? path[i - 1] - path[i - 2] : 0;
-			step = trend_strength * momentum + noise;
+			step = trend * momentum + noise;
 		} else {
-			// Standard Brownian motion
 			step = noise;
 		}
 		path[i] = path[i - 1] + step;
@@ -31,33 +24,26 @@ const generateFbmPath = (H, length) => {
 
 export default function FbmSimulator() {
 	const [H, setH] = useState(0.2);
-	const [pathKey, setPathKey] = useState(0); // To force regeneration
-	const [pathData, setPathData] = useState('');
+	const [pathKey, setPathKey] = useState(0);
 
 	const width = 600;
 	const height = 300;
 	const points = 200;
-	const padding = { top: 20, right: 20, bottom: 40, left: 50 };
-	const plotWidth = width - padding.left - padding.right;
-	const plotHeight = height - padding.top - padding.bottom;
+	const padding = 20;
 
-	useEffect(() => {
-		const rawPath = generateFbmPath(H, points);
-
+	const pathData = useMemo(() => {
+		const rawPath = generatePath(H, points);
 		const yMin = Math.min(...rawPath);
 		const yMax = Math.max(...rawPath);
 		const yRange = yMax - yMin || 1;
 
-		const mappedPath = rawPath
-			.map((y, i) => {
-				const x = padding.left + (i / (points - 1)) * plotWidth;
-				const scaledY = ((y - yMin) / yRange) * plotHeight;
-				const invertedY = padding.top + plotHeight - scaledY; // SVG Y-coords are top-down
-				return `${x},${invertedY}`;
+		return rawPath
+			.map((val, i) => {
+				const x = padding + (i / (points - 1)) * (width - padding * 2);
+				const y = height - padding - ((val - yMin) / yRange) * (height - padding * 2);
+				return `${x},${y}`;
 			})
 			.join(' ');
-
-		setPathData(mappedPath);
 	}, [H, pathKey]);
 
 	return (
@@ -65,19 +51,17 @@ export default function FbmSimulator() {
 			<div className="border-b border-zinc-800 pb-4">
 				<svg width="100%" viewBox={`0 0 ${width} ${height}`} className="rounded-lg bg-zinc-950 border border-zinc-800">
 					{/* Axes */}
-					<line x1={padding.left} y1={padding.top} x2={padding.left} y2={height - padding.bottom} stroke="#404040" strokeWidth="1" />
-					<line x1={padding.left} y1={height - padding.bottom} x2={width - padding.right} y2={height - padding.bottom} stroke="#404040" strokeWidth="1" />
-
-					{/* Axis Labels */}
-					<text x={padding.left - 30} y={padding.top + plotHeight / 2} fill="#a1a1aa" fontSize="12" transform={`rotate(-90 ${padding.left - 30},${padding.top + plotHeight / 2})`}>
-						B_H(t)
-					</text>
-					<text x={padding.left + plotWidth / 2} y={height - 10} fill="#a1a1aa" fontSize="12">
-						t
-					</text>
+					<line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="#3f3f46" strokeWidth="1" />
+					<line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#3f3f46" strokeWidth="1" />
 
 					{/* Path */}
-					<polyline points={pathData} fill="none" stroke="#06b6d4" strokeWidth="1.5" style={{ filter: 'drop-shadow(0px 0px 5px #06b6d4)' }} />
+					<polyline
+						points={pathData}
+						fill="none"
+						stroke="#06b6d4"
+						strokeWidth="2"
+						style={{ filter: 'drop-shadow(0 0 8px rgba(6,182,212,0.8))' }}
+					/>
 				</svg>
 				<div className="mt-2 rounded-md border border-amber-600/30 bg-amber-950/20 p-2 text-center text-xs text-amber-400">
 					<span className="font-bold">[PROXY MODE]</span> This is a client-side JavaScript

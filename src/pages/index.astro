@@ -85,16 +85,30 @@ const projects = [
 
 							{project.title === 'Lifepack (R Package)' && (
 								<div class="mt-4">
-									<div class="rounded-md border border-zinc-800 bg-zinc-950 p-3 font-mono text-sm">
+									<div class="rounded-md border border-zinc-800 bg-zinc-950 p-3 font-mono text-xs overflow-x-auto">
 										<div class="flex">
-											<span class="text-blue-400">&gt;</span>
-											<code class="ml-2 text-zinc-300">
-												lifepack::calculate_premium(age = 35, sum_assured = 100000)
-											</code>
+											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+											<code class="text-zinc-300">library(lifepack)</code>
 										</div>
 										<div class="flex">
-											<span class="text-zinc-500">[1]</span>
-											<code class="ml-2 text-terminal-green">235.78</code>
+											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+											<code class="text-zinc-300">Lambda &lt;- function(x) matrix(c(-0.1, 0.1, 0.05, -0.05), 2, 2)</code>
+										</div>
+										<div class="flex">
+											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+											<code class="text-zinc-300">R &lt;- function(x, mu) matrix(c(mu, 0, 0, mu), 2, 2)</code>
+										</div>
+										<div class="flex">
+											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+											<code class="text-zinc-300">dR &lt;- function(x, mu) matrix(c(0.1, 0, 0, 0.1), 2, 2)</code>
+										</div>
+										<div class="flex">
+											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+											<code class="text-zinc-300">equiv_premium(0, 80, Lambda, R, dR, 0.05, 0.03, 100)</code>
+										</div>
+										<div class="flex">
+											<span class="text-zinc-500 mr-2 flex-shrink-0">[1]</span>
+											<code class="text-terminal-green">0.04512</code>
 										</div>
 									</div>
 									<div class="mt-4">
