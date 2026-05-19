@@ -53,7 +53,7 @@ export default function FbmSimulator() {
 			<div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
 				<div className="flex-1">
 					<label htmlFor="hurst-slider" className="block text-sm font-medium text-zinc-300">
-						Hurst Parameter (H): {parseFloat(hurst).toFixed(2)}
+						Hurst Parameter (H): {hurst.toFixed(2)}
 					</label>
 					<input
 						id="hurst-slider"
