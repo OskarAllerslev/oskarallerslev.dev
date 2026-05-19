@@ -99,7 +99,7 @@ export default function FbmSimulator() {
 				</button>
 			</div>
 
-			<div className="mt-6 rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
+			<div className="mt-6 border-t border-zinc-800 pt-4">
 				<h5 className="text-base font-semibold text-zinc-100">Theory & Methodology</h5>
 				<p className="mt-2 text-sm text-zinc-400">
 					Financial volatility and electricity spot prices often exhibit "roughness," a statistical
