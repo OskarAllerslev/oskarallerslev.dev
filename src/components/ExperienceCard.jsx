@@ -12,7 +12,7 @@ const experiences = [
 	{
 		name: 'PFA Pension',
 		role: 'Student Actuary, Insurance Insights',
-		dates: 'July 2026',
+		dates: 'Present',
 		description:
 			'Developing internal R packages (Lifepack), data pipelines, and quantitative reporting tools.',
 		initials: 'PFA',
