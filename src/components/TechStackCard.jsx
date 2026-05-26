@@ -1,22 +1,26 @@
 import React from 'react';
 
-const TechItem = ({ name, detail, color }) => (
-	<div className="flex items-center justify-between rounded-md bg-zinc-900/50 p-3 transition-all duration-300 group-hover:bg-zinc-800/50">
-		<span className={`font-mono text-sm font-semibold ${color}`}>{name}</span>
-		{detail && <span className="text-xs text-zinc-400">{detail}</span>}
-	</div>
-);
+const technologies = [
+	{ name: 'C++', color: 'text-blue-400' },
+	{ name: 'Rust', color: 'text-orange-400' },
+	{ name: 'R', color: 'text-sky-400' },
+	{ name: 'Python', color: 'text-yellow-400' },
+	{ name: 'Neovim', color: 'text-green-400' },
+];
 
 export default function TechStackCard() {
 	return (
 		<div className="flex h-full flex-col">
 			<h4 className="text-lg font-bold text-zinc-100">Core Toolkit</h4>
-			<div className="mt-4 flex flex-grow flex-col justify-center gap-3">
-				<TechItem name="C++" color="text-blue-400" />
-				<TechItem name="Rust" color="text-orange-400" />
-				<TechItem name="R" color="text-sky-400" />
-				<TechItem name="Python" color="text-yellow-400" />
-				<TechItem name="Neovim" detail="LazyVim" color="text-green-400" />
+			<div className="mt-4 flex flex-grow flex-wrap content-center justify-center gap-4 py-4">
+				{technologies.map((tech) => (
+					<div
+						key={tech.name}
+						className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md transition-all hover:scale-110 hover:bg-white/10 text-sm font-semibold"
+					>
+						<span className={tech.color}>{tech.name}</span>
+					</div>
+				))}
 			</div>
 		</div>
 	);
