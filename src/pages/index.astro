@@ -78,11 +78,11 @@ const projects = [
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{
 					projects.map((project, i) => {
-						const colSpan = i === 0 || i === 3 ? 'lg:col-span-2' : '';
+						const colSpan = i === 0 ? 'lg:col-span-3' : '';
 						return (
 							<div
 								class:list={[
-									'group rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-teal-500/50 hover:shadow-2xl hover:shadow-teal-500/30 hover:-translate-y-1 backdrop-blur-md overflow-hidden flex flex-col opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]',
+									'group rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-teal-500/50 hover:shadow-2xl hover:shadow-teal-500/30 hover:-translate-y-1 backdrop-blur-md overflow-hidden flex flex-col opacity-0 animate-[fadeIn_0.5s_ease-out_forwards] min-h-80',
 									colSpan,
 								]}
 								style={`animation-delay: ${300 + i * 150}ms;`}
@@ -91,7 +91,7 @@ const projects = [
 									<a href={project.href} target="_blank" rel="noopener noreferrer" class="hover:underline">
 										<h4 class="text-lg font-bold text-zinc-100">{project.title}</h4>
 									</a>
-									<p class="mt-2 text-sm text-zinc-400">{project.description}</p>
+									<p class="mt-2 text-sm text-zinc-400 line-clamp-2">{project.description}</p>
 
 									{project.component === 'RustApiExplorer' && <RustApiExplorer client:load />}
 									{project.component === 'FbmSimulator' && <FbmSimulator client:load />}
