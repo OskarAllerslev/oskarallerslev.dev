@@ -7,7 +7,7 @@ export default function GitHubCard() {
 	};
 
 	return (
-		<div className="min-h-[150px] overflow-hidden">
+		<div className="min-h-[150px] overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 			<GitHubCalendar
 				username="oskarallerslev"
 				colorScheme="dark"
