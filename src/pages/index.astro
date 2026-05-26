@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import RustApiExplorer from '../components/RustApiExplorer.jsx';
 import FbmSimulator from '../components/FbmSimulator.jsx';
-import TerminalSession from '../components/TerminalSession.jsx';
 import { BlockMath, InlineMath } from 'react-katex';
 
 const projects = [
@@ -40,21 +39,20 @@ const projects = [
 ---
 
 <Layout title="Oskar Allerslev | Portfolio">
-	<main class="mx-auto max-w-[1400px] w-full grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-12 px-6 py-16 relative z-10">
-		<div class="animate-[fadeIn_1s_ease-out]">
-			<!-- Hero Section -->
-			<section class="mb-16">
-			<h1 class="text-4xl font-bold tracking-tight text-zinc-100 sm:text-5xl">Oskar Allerslev</h1>
-			<h2 class="mt-2 text-lg font-medium tracking-tight text-teal-400 sm:text-xl">
+	<main class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+		<!-- Hero Section -->
+		<section class="animate-[fadeIn_1s_ease-out] text-center">
+			<h1 class="text-4xl font-bold tracking-tight text-zinc-100 sm:text-6xl">Oskar Allerslev</h1>
+			<h2 class="mt-4 text-lg font-medium tracking-tight text-teal-400 sm:text-2xl">
 				Quantitative Infrastructure & Actuarial Engineering
 			</h2>
-			<p class="mt-6 max-w-2xl text-base text-zinc-400">
+			<p class="mt-6 mx-auto max-w-3xl text-lg text-zinc-400">
 				MSc Actuarial Mathematics student at UCPH and Student Actuary at PFA Pension. I specialize
 				in quantitative risk management (QRM), stochastic calculus, and machine learning. My focus
 				is translating advanced mathematical theory into scalable, low-latency pricing engines and
 				infrastructure using C++, Rust, and R.
 			</p>
-			<div class="mt-8 flex items-center gap-4">
+			<div class="mt-10 flex items-center justify-center gap-4">
 				<a
 					href="/CV_Oskar_Allerslev.pdf"
 					download="CV_Oskar_Allerslev.pdf"
@@ -75,97 +73,94 @@ const projects = [
 			</div>
 		</section>
 
-		<!-- Core Tech Stack -->
-		<section class="mb-16">
-			<h3 class="text-sm font-semibold uppercase tracking-widest text-zinc-500">Core Tech Stack</h3>
-			<div class="mt-4 flex flex-wrap gap-2">
-				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-teal-400">Rust</span>
-				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-teal-400">C++</span>
-				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-teal-400">R</span>
-				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-teal-400">Python</span>
-				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-teal-400">SQL</span>
-				<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-sm font-medium text-teal-400">XGBoost</span>
-			</div>
-		</section>
-
-		<!-- Featured Infrastructure -->
-		<section>
-			<h3 class="text-sm font-semibold uppercase tracking-widest text-zinc-500">
-				Featured Infrastructure
-			</h3>
-			<div class="mt-4 grid gap-8">
+		<!-- Bento Box Projects Grid -->
+		<section class="mt-24">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{
-					projects.map((project) => (
-						<div class="group rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 transition-all duration-300 hover:border-teal-500/50 hover:shadow-2xl hover:shadow-teal-900/20 backdrop-blur-md overflow-hidden">
-							<a href={project.href} target="_blank" rel="noopener noreferrer" class="hover:underline">
-								<h4 class="font-bold text-zinc-100">{project.title}</h4>
-							</a>
-							<p class="mt-2 text-zinc-400">{project.description}</p>
+					projects.map((project, i) => {
+						const colSpan = i === 0 || i === 3 ? 'lg:col-span-2' : '';
+						return (
+							<div
+								class:list={[
+									'group rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-teal-500/50 hover:shadow-2xl hover:shadow-teal-900/20 backdrop-blur-md overflow-hidden flex flex-col',
+									colSpan,
+								]}
+							>
+								<div class="flex-grow">
+									<a href={project.href} target="_blank" rel="noopener noreferrer" class="hover:underline">
+										<h4 class="text-lg font-bold text-zinc-100">{project.title}</h4>
+									</a>
+									<p class="mt-2 text-sm text-zinc-400">{project.description}</p>
 
-							{project.component === 'RustApiExplorer' && <RustApiExplorer client:load />}
-							{project.component === 'FbmSimulator' && <FbmSimulator client:load />}
+									{project.component === 'RustApiExplorer' && <RustApiExplorer client:load />}
+									{project.component === 'FbmSimulator' && <FbmSimulator client:load />}
 
-							{project.title === 'Lifepack (R Package)' && (
-								<div class="mt-4">
-									<div class="rounded-md border border-zinc-800 bg-zinc-950 p-3 font-mono text-xs overflow-x-auto">
-										<div class="flex">
-											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
-											<code class="text-zinc-300">library(lifepack)</code>
+									{project.title === 'Lifepack (R Package)' && (
+										<div class="mt-4">
+											<div class="rounded-md border border-zinc-800 bg-zinc-950 p-3 font-mono text-xs overflow-x-auto">
+												<div class="flex">
+													<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+													<code class="text-zinc-300">library(lifepack)</code>
+												</div>
+												<div class="flex">
+													<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+													<code class="text-zinc-300">
+														Lambda &lt;- function(x) matrix(c(-0.1, 0.1, 0.05, -0.05), 2, 2)
+													</code>
+												</div>
+												<div class="flex">
+													<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+													<code class="text-zinc-300">R &lt;- function(x, mu) matrix(c(mu, 0, 0, mu), 2, 2)</code>
+												</div>
+												<div class="flex">
+													<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+													<code class="text-zinc-300">dR &lt;- function(x, mu) matrix(c(0.1, 0, 0, 0.1), 2, 2)</code>
+												</div>
+												<div class="flex">
+													<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
+													<code class="text-zinc-300">
+														equiv_premium(0, 80, Lambda, R, dR, 0.05, 0.03, 100)
+													</code>
+												</div>
+												<div class="flex">
+													<span class="text-zinc-500 mr-2 flex-shrink-0">[1]</span>
+													<code class="text-terminal-green">0.04512</code>
+												</div>
+											</div>
+											<div class="mt-4">
+												<a
+													href="https://cran.r-project.org/web/packages/lifepack/index.html"
+													target="_blank"
+													rel="noopener noreferrer"
+													class="inline-block rounded-md bg-zinc-800 px-3 py-1 text-xs font-semibold text-zinc-300 transition hover:bg-zinc-700"
+												>
+													View on CRAN
+												</a>
+											</div>
 										</div>
-										<div class="flex">
-											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
-											<code class="text-zinc-300">Lambda &lt;- function(x) matrix(c(-0.1, 0.1, 0.05, -0.05), 2, 2)</code>
-										</div>
-										<div class="flex">
-											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
-											<code class="text-zinc-300">R &lt;- function(x, mu) matrix(c(mu, 0, 0, mu), 2, 2)</code>
-										</div>
-										<div class="flex">
-											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
-											<code class="text-zinc-300">dR &lt;- function(x, mu) matrix(c(0.1, 0, 0, 0.1), 2, 2)</code>
-										</div>
-										<div class="flex">
-											<span class="text-blue-400 mr-2 flex-shrink-0">&gt;</span>
-											<code class="text-zinc-300">equiv_premium(0, 80, Lambda, R, dR, 0.05, 0.03, 100)</code>
-										</div>
-										<div class="flex">
-											<span class="text-zinc-500 mr-2 flex-shrink-0">[1]</span>
-											<code class="text-terminal-green">0.04512</code>
-										</div>
-									</div>
-									<div class="mt-4">
-										<a
-											href="https://cran.r-project.org/web/packages/lifepack/index.html"
-											target="_blank"
-											rel="noopener noreferrer"
-											class="inline-block rounded-md bg-zinc-800 px-3 py-1 text-xs font-semibold text-zinc-300 transition hover:bg-zinc-700"
-										>
-											View on CRAN
-										</a>
-									</div>
+									)}
 								</div>
-							)}
 
-							<div class="mt-3 flex flex-wrap gap-2">
-								{project.tags.map((tag) => (
-									<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-teal-400">
-										{tag}
-									</span>
-								))}
+								<div class="mt-4 flex flex-wrap gap-2">
+									{project.tags.map((tag) => (
+										<span class="rounded bg-zinc-800 px-2 py-1 font-mono text-xs font-medium text-teal-400">
+											{tag}
+										</span>
+									))}
+								</div>
 							</div>
-						</div>
-					))
+						);
+					})
 				}
 			</div>
 		</section>
-
-		<!-- Terminal / Contact -->
-		</div>
-		<aside>
-			<div class="sticky top-12">
-				<TerminalSession client:load />
-			</div>
-		</aside>
 	</main>
+
+	<footer class="mt-24 py-10 border-t border-zinc-800">
+		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center text-zinc-400">
+			<p>&copy; {new Date().getFullYear()} Oskar Allerslev. Alle rettigheder forbeholdes.</p>
+			<p class="mt-2 text-sm">Bygget med Astro, React & Tailwind CSS. Udrullet på Vercel.</p>
+		</div>
+	</footer>
 </Layout>
 
