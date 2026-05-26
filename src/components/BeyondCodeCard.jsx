@@ -24,8 +24,9 @@ export default function BeyondCodeCard() {
 				Beyond Code
 			</h4>
 			<p className="mt-4 text-sm text-zinc-400">
-				Applying data-driven optimization outside the terminal. Elite sprint swimmer (50m)
-				utilizing structured biohacking and sleep analytics for peak performance.
+				Applying data-driven optimization outside the terminal. Elite sprint swimmer utilizing
+				structured biohacking and sleep analytics for peak performance. Personal Best:{' '}
+				<span className="font-bold text-teal-400">30.09s</span> in 50m Breaststroke.
 			</p>
 		</div>
 	);
