@@ -24,7 +24,7 @@ const experiences = [
 export default function ExperienceCard() {
 	return (
 		<div className="flex h-full flex-col">
-			<h4 className="text-lg font-bold text-zinc-100">Experience & Education</h4>
+			<h4 className="text-lg font-bold text-zinc-100">Experience &amp; Education</h4>
 			<div className="mt-4 flex flex-grow flex-col justify-center gap-4">
 				{experiences.map((exp, index) => (
 					<div key={index} className="flex items-center">
