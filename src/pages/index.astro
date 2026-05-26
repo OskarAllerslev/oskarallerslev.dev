@@ -6,6 +6,7 @@ import GitHubCard from '../components/GitHubCard.jsx';
 import LeetCodeCard from '../components/LeetCodeCard.jsx';
 import ProfileImageCard from '../components/ProfileImageCard.jsx';
 import ExperienceCard from '../components/ExperienceCard.jsx';
+import BeyondCodeCard from '../components/BeyondCodeCard.jsx';
 import { BlockMath, InlineMath } from 'react-katex';
 
 const projects = [
@@ -178,12 +179,22 @@ const projects = [
 					<ExperienceCard client:only="react" />
 				</div>
 
-				{/* LeetCode Stats Card */}
+				{/* Beyond Code Card */}
 				<div
 					class:list={[
 						'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
 					]}
 					style={`animation-delay: ${300 + (projects.length + 2) * 150}ms;`}
+				>
+					<BeyondCodeCard client:only="react" />
+				</div>
+
+				{/* LeetCode Stats Card */}
+				<div
+					class:list={[
+						'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
+					]}
+					style={`animation-delay: ${300 + (projects.length + 3) * 150}ms;`}
 				>
 					<LeetCodeCard client:only="react" />
 				</div>
@@ -193,7 +204,7 @@ const projects = [
 					class:list={[
 						'lg:col-span-2 group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
 					]}
-					style={`animation-delay: ${300 + (projects.length + 3) * 150}ms;`}
+					style={`animation-delay: ${300 + (projects.length + 4) * 150}ms;`}
 				>
 					<div class="flex-grow">
 						<a
