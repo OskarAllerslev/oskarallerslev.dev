@@ -82,6 +82,45 @@ const projects = [
 		<!-- Bento Box Projects Grid -->
 		<section class="mt-24">
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				{/* Profile Image Card */}
+				<div
+					class:list={[
+						'group flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
+					]}
+					style={`animation-delay: ${300 + 0 * 150}ms;`}
+				>
+					<ProfileImageCard client:only="react" />
+				</div>
+
+				{/* Experience Card */}
+				<div
+					class:list={[
+						'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
+					]}
+					style={`animation-delay: ${300 + 1 * 150}ms;`}
+				>
+					<ExperienceCard client:only="react" />
+				</div>
+
+				{/* Beyond Code Card */}
+				<div
+					class:list={[
+						'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
+					]}
+					style={`animation-delay: ${300 + 2 * 150}ms;`}
+				>
+					<BeyondCodeCard client:only="react" />
+				</div>
+
+				{/* Tech Stack Card */}
+				<div
+					class:list={[
+						'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
+					]}
+					style={`animation-delay: ${300 + 3 * 150}ms;`}
+				>
+					<TechStackCard client:only="react" />
+				</div>
 				{
 					projects.map((project, i) => {
 						const colSpan = i === 0 ? 'lg:col-span-3' : '';
@@ -91,7 +130,7 @@ const projects = [
 									'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
 									colSpan,
 								]}
-								style={`animation-delay: ${300 + i * 150}ms;`}
+								style={`animation-delay: ${300 + (4 + i) * 150}ms;`}
 							>
 								<div class="flex-grow">
 									<a href={project.href} target="_blank" rel="noopener noreferrer" class="hover:underline">
@@ -160,45 +199,6 @@ const projects = [
 					})
 				}
 
-				{/* Profile Image Card */}
-				<div
-					class:list={[
-						'group flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
-					]}
-					style={`animation-delay: ${300 + projects.length * 150}ms;`}
-				>
-					<ProfileImageCard client:only="react" />
-				</div>
-
-				{/* Experience Card */}
-				<div
-					class:list={[
-						'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
-					]}
-					style={`animation-delay: ${300 + (projects.length + 1) * 150}ms;`}
-				>
-					<ExperienceCard client:only="react" />
-				</div>
-
-				{/* Beyond Code Card */}
-				<div
-					class:list={[
-						'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
-					]}
-					style={`animation-delay: ${300 + (projects.length + 2) * 150}ms;`}
-				>
-					<BeyondCodeCard client:only="react" />
-				</div>
-
-				{/* Tech Stack Card */}
-				<div
-					class:list={[
-						'group p-6 flex flex-col min-h-80 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-white/5 border border-white/10 bg-white/5 rounded-2xl overflow-hidden backdrop-blur-sm opacity-0 animate-fadeIn',
-					]}
-					style={`animation-delay: ${300 + (projects.length + 3) * 150}ms;`}
-				>
-					<TechStackCard client:only="react" />
-				</div>
 
 				{/* LeetCode Stats Card */}
 				<div
