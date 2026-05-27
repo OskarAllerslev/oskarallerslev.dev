@@ -19,7 +19,7 @@ export default function LeetCodeCard() {
 	return (
 		<div className="flex h-full flex-col justify-between space-y-4">
 			<div className="flex items-center justify-between">
-				<span className="text-[11px] text-zinc-500 font-mono uppercase tracking-wider">Metrics Snapshot</span>
+				<span className="text-[11px] text-zinc-550 font-mono uppercase tracking-wider">Metrics Snapshot</span>
 				<a
 					href="https://leetcode.com/oskarallerslev/"
 					target="_blank"
@@ -47,12 +47,12 @@ export default function LeetCodeCard() {
 
 			<div className="border-t border-zinc-850 pt-3">
 				<h5 className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 font-mono mb-2">Top Languages</h5>
-				<div className="grid grid-cols-2 gap-2 text-xs">
-					<div className="flex items-center justify-between rounded bg-zinc-950 border border-zinc-800 px-2.5 py-1 font-mono text-[11px] text-zinc-300">
+				<div className="grid grid-cols-2 gap-3 p-2 bg-zinc-950/40 rounded-lg border border-zinc-800/50 text-xs">
+					<div className="flex items-center justify-between px-1.5 font-mono text-[11px] text-zinc-300">
 						<span className="text-zinc-500">C++</span>
 						<span className="font-semibold text-zinc-100">24</span>
 					</div>
-					<div className="flex items-center justify-between rounded bg-zinc-950 border border-zinc-800 px-2.5 py-1 font-mono text-[11px] text-zinc-300">
+					<div className="flex items-center justify-between px-1.5 font-mono text-[11px] text-zinc-300">
 						<span className="text-zinc-500">Rust</span>
 						<span className="font-semibold text-zinc-100">11</span>
 					</div>

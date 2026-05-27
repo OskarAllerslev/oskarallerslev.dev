@@ -11,7 +11,7 @@ export default function GitHubCard() {
 	};
 
 	return (
-		<div className="w-full overflow-x-auto no-scrollbar py-2">
+		<div className="w-full overflow-x-auto no-scrollbar scroll-smooth py-2">
 			<div className="min-w-[670px] md:min-w-[670px] lg:min-w-0 lg:w-full flex justify-center font-mono">
 				<GitHubCalendar
 					username="oskarallerslev"
