@@ -1,35 +1,33 @@
 import { useState, useEffect, useRef } from 'react';
 
 const commands = {
-	help: `
-        <p class="mb-1">This is an interactive terminal. Available commands:</p>
-        <div class="flex"><span class="w-20 shrink-0 text-zinc-500">experience</span><span>Display my professional work history.</span></div>
-        <div class="flex"><span class="w-20 shrink-0 text-zinc-500">education</span><span>Show my academic background.</span></div>
-        <div class="flex"><span class="w-20 shrink-0 text-zinc-500">skills</span><span>List my technical skills and stack.</span></div>
-		<div class="flex"><span class="w-20 shrink-0 text-zinc-500">projects</span><span>View project stack.</span></div>
-        <div class="flex"><span class="w-20 shrink-0 text-zinc-500">links</span><span>Display Github/Email links.</span></div>
-        <div class="flex"><span class="w-20 shrink-0 text-zinc-500">clear</span><span>Reset the terminal.</span></div>
-    `,
-	experience: `[ Nov 2024 - Present ] PFA Pension | Student Actuary\n- Designed Azure DevOps ETL pipelines for Commercial Insurance.\n- Automated client reporting via R officer package.\n- Built interactive Shiny dashboards for financial metrics.`,
-	education: `[ 2024 - Present ] MSc Actuarial Mathematics @ UCPH\n- Focus: Advanced probability, QRM, ML, financial econometrics.\n[ 2021 - 2024 ] BSc Actuarial Mathematics @ UCPH\n- Thesis: Hybrid insurance pricing framework.\n- Highlight: Extreme Value Theory (EVT) & GLM modeling.`,
-	skills: `Languages: R (Advanced/Package Dev), SQL, Python, C++, LaTeX.\nTools: Git, Azure DevOps, VS Code, Shiny, Tidyverse.\nMath: Extreme Value Theory, GLM, Cointegration, Machine Learning.`,
-	projects: [
-		'First Rust API (Stock VaR)',
-		'Rough Volatility Monte Carlo Pricer',
-		'Nitor Energy Forecasting Competition 2026',
-		'Lifepack (R Package)',
-	]
-		.map((p) => `<div>- ${p}</div>`)
-		.join(''),
-	links: `
-        <div class="flex"><span class="w-16 shrink-0 text-zinc-500">GITHUB</span><a href="https://github.com/OskarAllerslev" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:underline">github.com/OskarAllerslev</a></div>
-        <div class="flex"><span class="w-16 shrink-0 text-zinc-500">EMAIL</span><a href="mailto:Oskar.m1660@gmail.com" class="text-teal-400 hover:underline">Oskar.m1660@gmail.com</a></div>
-    `,
+	help: `Available commands:
+- experience : Display professional work history.
+- education  : Show academic background.
+- skills     : List technical stack.
+- clear      : Reset terminal.`,
+	experience: `[ Nov 2024 - Present ] PFA Pension | Student Actuary
+- Designed Azure DevOps ETL pipelines for Commercial Insurance.
+- Automated client reporting via R officer package.
+- Built interactive Shiny dashboards.
+- Executed complex data transformations using SQL and dplyr/dbplyr.
+
+[ Jan 2024 - Jan 2025 ] Again Bio | Finance Assistant
+- Constructed financial models and budget forecasts using renewal theory.`,
+	education: `[ Sep 2024 - Present ] MSc Actuarial Mathematics @ University of Copenhagen
+- Focus: Advanced probability, QRM, ML, financial econometrics.
+
+[ Sep 2021 - Jun 2024 ] BSc Actuarial Mathematics @ University of Copenhagen
+- Thesis: Hybrid insurance pricing framework.
+- Highlight: Engineered a fire claim severity model using Extreme Value Theory (EVT).`,
+	skills: `Languages: R (Advanced/Package Dev), SQL, Python, C++, LaTeX.
+Tools: Git, Azure DevOps, VS Code, Shiny, Tidyverse.
+Math: Extreme Value Theory, GLM, Time Series (Cointegration), Machine Learning.`,
 };
 
 const Prompt = ({ children }) => (
-	<div className="flex">
-		<div>
+	<div className="flex text-[13px] leading-relaxed">
+		<div className="flex-shrink-0">
 			<span className="text-terminal-green">oskar@oskarallerslev.dev</span>
 			<span className="text-zinc-500">:</span>
 			<span className="text-blue-400">~</span>
@@ -43,7 +41,7 @@ export default function TerminalSession() {
 	const [history, setHistory] = useState([
 		{
 			command: '',
-			output: "Welcome to Oskar's interactive portfolio. Type \"help\" for a tutorial.",
+			output: "Welcome to Oskar's interactive portfolio. Type \"help\" to explore my CV.",
 		},
 	]);
 	const [input, setInput] = useState('');
@@ -74,12 +72,8 @@ export default function TerminalSession() {
 			output = commands.education;
 		} else if (lowerCmd === 'skills') {
 			output = commands.skills;
-		} else if (lowerCmd === 'projects') {
-			output = commands.projects;
-		} else if (lowerCmd === 'links') {
-			output = commands.links;
 		} else if (lowerCmd !== '') {
-			output = `<p>command not found: ${input}. Try 'help'.</p>`;
+			output = `command not found: ${input}. Try 'help'.`;
 		}
 
 		setHistory((prev) => [...prev, { command: input, output }]);
@@ -87,24 +81,30 @@ export default function TerminalSession() {
 	};
 
 	return (
-		<>
-			<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-[13px] tracking-wide text-zinc-300 h-[600px] flex flex-col">
-				<div ref={terminalBodyRef} className="flex-grow overflow-y-auto no-scrollbar">
+		<div className="flex flex-col h-full">
+			<div className="rounded-lg border border-zinc-800 bg-black/50 backdrop-blur-md p-4 font-mono text-[13px] leading-relaxed tracking-wide text-zinc-300 flex-1 flex flex-col overflow-hidden">
+				<div ref={terminalBodyRef} className="flex-grow overflow-y-auto no-scrollbar space-y-3">
 					{history.map((entry, index) => (
-						<div key={index} className="mb-2">
+						<div key={index} className="space-y-1">
 							{entry.command && <Prompt>{entry.command}</Prompt>}
 							<div
-								className="whitespace-pre-wrap"
-								dangerouslySetInnerHTML={{ __html: entry.output }}
+								className="whitespace-pre-wrap text-[13px] leading-relaxed text-zinc-300"
+								dangerouslySetInnerHTML={{
+									__html: entry.output
+										.replace(/&/g, '&amp;')
+										.replace(/</g, '&lt;')
+										.replace(/>/g, '&gt;')
+										.replace(/\n/g, '<br />'),
+								}}
 							/>
 						</div>
 					))}
 				</div>
-				<form onSubmit={handleSubmit} className="mt-2">
+				<form onSubmit={handleSubmit} className="mt-4 pt-2 border-t border-zinc-800/40">
 					<Prompt>
 						<input
 							type="text"
-							className="w-full bg-transparent border-none outline-none"
+							className="w-full bg-transparent border-none outline-none text-[13px] leading-relaxed text-zinc-100 focus:ring-0 p-0"
 							value={input}
 							onChange={(e) => setInput(e.target.value)}
 							autoFocus
@@ -112,10 +112,9 @@ export default function TerminalSession() {
 					</Prompt>
 				</form>
 			</div>
-			<div className="mt-3 rounded-md border border-zinc-800/60 bg-zinc-900/40 p-3 text-center text-xs text-zinc-400">
-				Non-technical user? Type <span className="text-terminal-green">help</span> in the prompt
-				above.
+			<div className="mt-4 rounded-md border border-zinc-800/60 bg-zinc-900/40 p-3 text-center text-[13px] text-zinc-400 shadow-sm">
+				Non-technical user? Type <span className="text-teal-400 font-mono">help</span> in the prompt above to explore my CV.
 			</div>
-		</>
+		</div>
 	);
 }

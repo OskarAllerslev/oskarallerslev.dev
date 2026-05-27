@@ -27,13 +27,97 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
-		<div class="fixed inset-0 overflow-hidden z-[-1] pointer-events-none">
-			<div class="aurora-teal absolute h-96 w-96 rounded-full bg-teal-500 opacity-20 blur-3xl"></div>
-			<div class="aurora-purple absolute h-96 w-96 rounded-full bg-purple-500 opacity-20 blur-3xl"></div>
-			<div class="aurora-emerald absolute h-96 w-96 rounded-full bg-emerald-500 opacity-20 blur-3xl"></div>
+		<!-- Dynamic Background Canvas Container -->
+		<div class="fixed inset-0 overflow-hidden z-[-2] pointer-events-none bg-[#09090b]">
+			<!-- Mouse-Responsive Parallax SVG Wrapper -->
+			<svg 
+				class="svg-canvas absolute inset-0 w-full h-full" 
+				viewBox="0 0 1000 1000" 
+				preserveAspectRatio="xMidYMid slice"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<defs>
+					<!-- Gradients matching palette -->
+					<radialGradient id="grad-teal" cx="50%" cy="50%" r="50%">
+						<stop offset="0%" stop-color="#06b6d4" stop-opacity="0.22" />
+						<stop offset="100%" stop-color="#06b6d4" stop-opacity="0" />
+					</radialGradient>
+					<radialGradient id="grad-violet" cx="50%" cy="50%" r="50%">
+						<stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.18" />
+						<stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
+					</radialGradient>
+					<radialGradient id="grad-emerald" cx="50%" cy="50%" r="50%">
+						<stop offset="0%" stop-color="#10b981" stop-opacity="0.15" />
+						<stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+					</radialGradient>
+					
+					<!-- Gaussian Blur Filter for Plasma Melt -->
+					<filter id="plasma-blur">
+						<feGaussianBlur stdDeviation="90" />
+					</filter>
+				</defs>
+
+				<!-- Morphing Path Shapes -->
+				<g filter="url(#plasma-blur)">
+					<!-- Teal Fluid Shape -->
+					<path fill="url(#grad-teal)">
+						<animate 
+							attributeName="d" 
+							dur="22s" 
+							repeatCount="indefinite" 
+							values="
+								M 250,350 C 350,220 500,200 620,300 C 740,400 700,600 580,680 C 460,760 300,700 220,580 C 140,460 150,480 250,350 Z;
+								M 300,280 C 420,180 580,240 660,360 C 740,480 660,660 540,700 C 420,740 260,640 200,520 C 140,400 180,380 300,280 Z;
+								M 250,350 C 350,220 500,200 620,300 C 740,400 700,600 580,680 C 460,760 300,700 220,580 C 140,460 150,480 250,350 Z
+							" 
+						/>
+					</path>
+
+					<!-- Violet Fluid Shape -->
+					<path fill="url(#grad-violet)">
+						<animate 
+							attributeName="d" 
+							dur="28s" 
+							repeatCount="indefinite" 
+							values="
+								M 650,450 C 750,320 900,380 920,540 C 940,700 780,820 660,800 C 540,780 480,640 500,520 C 520,400 550,580 650,450 Z;
+								M 580,500 C 660,380 840,420 880,560 C 920,700 740,860 620,820 C 500,780 440,680 460,560 C 480,440 500,620 580,500 Z;
+								M 650,450 C 750,320 900,380 920,540 C 940,700 780,820 660,800 C 540,780 480,640 500,520 C 520,400 550,580 650,450 Z
+							" 
+						/>
+					</path>
+
+					<!-- Emerald Fluid Shape -->
+					<path fill="url(#grad-emerald)">
+						<animate 
+							attributeName="d" 
+							dur="25s" 
+							repeatCount="indefinite" 
+							values="
+								M 450,250 C 550,120 700,100 780,200 C 860,300 800,480 700,540 C 600,600 480,540 420,420 C 360,300 350,380 450,250 Z;
+								M 400,300 C 500,180 660,140 740,240 C 820,340 760,520 660,560 C 560,600 420,500 380,380 C 340,260 300,420 400,300 Z;
+								M 450,250 C 550,120 700,100 780,200 C 860,300 800,480 700,540 C 600,600 480,540 420,420 C 360,300 350,380 450,250 Z
+							" 
+						/>
+					</path>
+				</g>
+			</svg>
 		</div>
+
+		<!-- Illuminating Grid Overlay -->
+		<div class="grid-overlay fixed inset-0 z-[-1] pointer-events-none"></div>
+
 		<slot />
 		<Analytics />
+
+		<script is:inline>
+			document.addEventListener('mousemove', (e) => {
+				const x = e.clientX;
+				const y = e.clientY;
+				document.documentElement.style.setProperty('--mouse-x', `${x}px`);
+				document.documentElement.style.setProperty('--mouse-y', `${y}px`);
+			});
+		</script>
 	</body>
 </html>
 <style is:global>
@@ -47,34 +131,19 @@ const { title } = Astro.props;
 		overflow-x: hidden;
 	}
 
-	.aurora-teal {
-		top: -20%;
-		left: -10%;
-		animation: aurora 20s infinite linear alternate;
-	}
-	.aurora-purple {
-		top: 50%;
-		left: 50%;
-		animation: aurora 25s infinite linear alternate;
-		animation-delay: 3s;
-	}
-	.aurora-emerald {
-		bottom: -20%;
-		right: -10%;
-		animation: aurora 22s infinite linear alternate;
-		animation-delay: 6s;
+	/* Parallax transition matrix on the SVG wrapper */
+	.svg-canvas {
+		transform: translate(calc(var(--mouse-x, 0px) * 0.05), calc(var(--mouse-y, 0px) * 0.05)) scale(1.1);
+		transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 	}
 
-	@keyframes aurora {
-		0% {
-			transform: translate(0, 0) rotate(0deg) scale(1);
-		}
-		50% {
-			transform: translate(25vw, 30vh) rotate(180deg) scale(1.2);
-		}
-		100% {
-			transform: translate(0, 0) rotate(360deg) scale(1);
-		}
+	/* Grid Overlay Screen Blending */
+	.grid-overlay {
+		background-size: 36px 36px;
+		background-image: 
+			linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+			linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+		mix-blend-mode: screen;
 	}
 
 	.no-scrollbar::-webkit-scrollbar {
@@ -84,5 +153,4 @@ const { title } = Astro.props;
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
 	}
-
 </style>

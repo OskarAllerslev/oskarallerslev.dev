@@ -2,11 +2,11 @@ import React from 'react';
 
 const StatProgressBar = ({ label, value, color }) => (
 	<div>
-		<div className="flex items-center justify-between text-sm">
+		<div className="flex items-center justify-between text-xs">
 			<span className={color}>{label}</span>
 			<span className="font-mono text-zinc-300">{value}</span>
 		</div>
-		<div className="mt-1 h-1.5 w-full rounded-full bg-white/10">
+		<div className="mt-1 h-1.5 w-full rounded-full bg-white/5">
 			<div
 				className={`h-1.5 rounded-full ${color.replace('text-', 'bg-')}`}
 				style={{ width: `${(value / 34) * 100}%` }}
@@ -17,12 +17,9 @@ const StatProgressBar = ({ label, value, color }) => (
 
 export default function LeetCodeCard() {
 	return (
-		<div className="flex h-full flex-col">
-			<div className="flex items-start justify-between">
-				<div>
-					<h4 className="text-lg font-bold text-zinc-100">LeetCode Stats</h4>
-					<p className="mt-1 text-xs text-zinc-400">Statisk øjebliksbillede</p>
-				</div>
+		<div className="flex h-full flex-col justify-between space-y-4">
+			<div className="flex items-center justify-between">
+				<span className="text-[11px] text-zinc-500 font-mono uppercase tracking-wider">Metrics Snapshot</span>
 				<a
 					href="https://leetcode.com/oskarallerslev/"
 					target="_blank"
@@ -33,29 +30,31 @@ export default function LeetCodeCard() {
 				</a>
 			</div>
 
-			<div className="my-6 flex flex-grow items-center gap-6">
+			<div className="flex items-center gap-6">
 				{/* Total Solved */}
-				<div className="flex flex-col items-center justify-center">
-					<p className="text-6xl font-bold text-zinc-100">34</p>
-					<p className="mt-1 text-sm text-zinc-400">Solved</p>
+				<div className="flex flex-col items-center justify-center shrink-0">
+					<p className="text-4xl font-extrabold text-zinc-100 font-mono">34</p>
+					<p className="text-[10px] text-zinc-500 uppercase tracking-wider">Solved</p>
 				</div>
 
 				{/* Breakdown */}
-				<div className="w-full flex-1 space-y-3">
+				<div className="w-full flex-1 space-y-2">
 					<StatProgressBar label="Easy" value={30} color="text-green-400" />
 					<StatProgressBar label="Medium" value={4} color="text-yellow-500" />
 					<StatProgressBar label="Hard" value={0} color="text-red-500" />
 				</div>
 			</div>
 
-			<div className="mt-auto border-t border-white/10 pt-4">
-				<h5 className="text-sm font-semibold text-zinc-300">Top Languages</h5>
-				<div className="mt-2 flex items-center justify-between text-xs text-zinc-400">
-					<div>
-						C++: <span className="font-mono font-semibold text-zinc-200">24</span>
+			<div className="border-t border-zinc-850 pt-3">
+				<h5 className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 font-mono mb-2">Top Languages</h5>
+				<div className="grid grid-cols-2 gap-2 text-xs">
+					<div className="flex items-center justify-between rounded bg-zinc-950 border border-zinc-800 px-2.5 py-1 font-mono text-[11px] text-zinc-300">
+						<span className="text-zinc-500">C++</span>
+						<span className="font-semibold text-zinc-100">24</span>
 					</div>
-					<div>
-						Rust: <span className="font-mono font-semibold text-zinc-200">11</span>
+					<div className="flex items-center justify-between rounded bg-zinc-950 border border-zinc-800 px-2.5 py-1 font-mono text-[11px] text-zinc-300">
+						<span className="text-zinc-500">Rust</span>
+						<span className="font-semibold text-zinc-100">11</span>
 					</div>
 				</div>
 			</div>
