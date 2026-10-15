@@ -75,9 +75,6 @@ const quantMath = [
 ];
 const quantAlso = ['GLM', 'Time Series (Cointegration)', 'Machine Learning'];
 
-const marqueeA = ['Actuarial Mathematics', 'Stochastic Calculus', 'Risk Management', 'Pricing Engines'];
-const marqueeB = ['Java', 'R', 'C++', 'Rust', 'SQL', 'Python'];
-
 const externalIcon =
 	'<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9" /></svg>';
 ---
@@ -108,6 +105,7 @@ const externalIcon =
 					</p>
 					<div data-reveal style="--delay:240ms" class="flex flex-wrap items-center gap-3 pt-1">
 						<a
+							data-magnetic
 							href="/CV_Oskar_Allerslev.pdf"
 							download="CV_Oskar_Allerslev.pdf"
 							class="group inline-flex items-center gap-2 rounded-xl bg-zinc-100 px-4 py-2.5 text-sm font-semibold text-zinc-950 shadow-[0_8px_30px_-12px_rgba(255,255,255,0.5)] transition hover:-translate-y-0.5 hover:bg-white"
@@ -116,6 +114,7 @@ const externalIcon =
 							Download CV (PDF)
 						</a>
 						<a
+							data-magnetic
 							href="https://www.linkedin.com/in/oskarallerslev"
 							target="_blank"
 							rel="noopener noreferrer"
@@ -149,24 +148,6 @@ const externalIcon =
 			</a>
 		</section>
 
-		<!-- ================= Scroll-linked marquee ================= -->
-		<div class="marquee relative select-none overflow-hidden border-y border-white/[0.05] py-6" aria-hidden="true">
-			<div data-marquee="-1" class="marquee-row flex w-max gap-10 whitespace-nowrap">
-				{[...marqueeA, ...marqueeA, ...marqueeA].map((w, i) => (
-					<span class:list={['text-4xl font-extrabold tracking-tight sm:text-6xl', i % 2 ? 'text-outline' : 'text-zinc-800']}>
-						{w}<span class="ml-10 text-teal-400/60">✦</span>
-					</span>
-				))}
-			</div>
-			<div data-marquee="1" class="marquee-row mt-3 flex w-max gap-10 whitespace-nowrap">
-				{[...marqueeB, ...marqueeB, ...marqueeB, ...marqueeB].map((w, i) => (
-					<span class:list={['font-mono text-2xl font-semibold sm:text-3xl', i % 2 ? 'text-zinc-700' : 'text-outline-thin']}>
-						{w}<span class="ml-10 text-violet-400/50">/</span>
-					</span>
-				))}
-			</div>
-		</div>
-
 		<div class="mx-auto max-w-6xl px-5 sm:px-8">
 			<!-- ================= 01 Experience ================= -->
 			<section id="experience" class="section" aria-labelledby="exp-title">
@@ -174,6 +155,7 @@ const externalIcon =
 					<p class="section-num">01</p>
 					<h3 id="exp-title" data-split class="section-title">Experience &amp; Education</h3>
 					<p class="section-sub">Industry roles and degrees, newest first.</p>
+					<span class="section-meter" aria-hidden="true"><span></span></span>
 				</header>
 
 				<ol data-timeline class="relative space-y-4">
@@ -184,7 +166,7 @@ const externalIcon =
 							<span class="timeline-dot absolute left-0 top-6 grid h-6 w-6 place-items-center rounded-full border border-white/15 bg-zinc-950 transition-all duration-500">
 								<span class="h-1.5 w-1.5 rounded-full bg-zinc-500 transition-colors duration-500"></span>
 							</span>
-							<article class="card spotlight p-6">
+							<article data-tilt class="card spotlight p-6">
 								<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
 									<h4 class="text-base font-semibold text-zinc-100">{t.title}</h4>
 									<span class="shrink-0 font-mono text-[11px] text-zinc-500">{t.dates}</span>
@@ -207,15 +189,16 @@ const externalIcon =
 					<p class="section-num">02</p>
 					<h3 id="toolkit-title" data-split class="section-title">Core Toolkit</h3>
 					<p class="section-sub">What I build with, and the mathematics I build on.</p>
+					<span class="section-meter" aria-hidden="true"><span></span></span>
 				</header>
 
 				<div class="space-y-4">
 					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-						<div data-reveal class="card spotlight p-6">
+						<div data-reveal data-tilt class="card spotlight p-6">
 							<h4 class="card-label"><span class="card-icon">{'{ }'}</span>Languages</h4>
 							<div class="flex flex-wrap gap-2">{languages.map((l) => <span class="chip">{l}</span>)}</div>
 						</div>
-						<div data-reveal style="--delay:70ms" class="card spotlight p-6">
+						<div data-reveal style="--delay:70ms" data-tilt class="card spotlight p-6">
 							<h4 class="card-label"><span class="card-icon">⌁</span>Tools &amp; Infrastructure</h4>
 							<div class="flex flex-wrap gap-2">{tools.map((l) => <span class="chip">{l}</span>)}</div>
 						</div>
@@ -226,7 +209,7 @@ const externalIcon =
 					</div>
 					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						{quantMath.map((q, i) => (
-							<article data-reveal style={`--delay:${(i % 2) * 70}ms`} class="card spotlight flex flex-col gap-5 p-6">
+							<article data-reveal style={`--delay:${(i % 2) * 70}ms`} data-tilt class="card spotlight flex flex-col gap-5 p-6">
 								<div>
 								<h5 class="text-[15px] font-semibold text-zinc-100">{q.title}</h5>
 								<p class="mt-2 text-[13px] leading-relaxed text-zinc-400">{q.body}</p>
@@ -234,7 +217,7 @@ const externalIcon =
 								<div class="formula no-scrollbar mt-auto overflow-x-auto rounded-xl border border-white/[0.05] bg-black/30 px-3 pt-1 text-zinc-200" set:html={q.formula} />
 							</article>
 						))}
-						<article data-reveal style="--delay:70ms" class="card spotlight flex flex-col justify-between gap-4 p-6">
+						<article data-reveal style="--delay:70ms" data-tilt class="card spotlight flex flex-col justify-between gap-4 p-6">
 							<div>
 								<h5 class="text-[15px] font-semibold text-zinc-100">Statistics &amp; learning</h5>
 								<p class="mt-2 text-[13px] leading-relaxed text-zinc-400">Applied daily for pricing, forecasting and reporting.</p>
@@ -251,6 +234,7 @@ const externalIcon =
 					<p class="section-num">03</p>
 					<h3 id="projects-title" data-split class="section-title">Featured Infrastructure</h3>
 					<p class="section-sub">Open a project to read more and try the live demos.</p>
+					<span class="section-meter" aria-hidden="true"><span></span></span>
 					<button type="button" data-expand-all class="mt-5 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 font-mono text-[11px] text-zinc-400 transition hover:border-white/20 hover:text-zinc-100">
 						<span data-expand-label>Expand all</span>
 					</button>
@@ -378,8 +362,9 @@ const externalIcon =
 					<p class="section-num">04</p>
 					<h3 id="beyond-title" data-split class="section-title">Beyond Code</h3>
 					<p class="section-sub">Optimization outside the terminal.</p>
+					<span class="section-meter" aria-hidden="true"><span></span></span>
 				</header>
-				<div data-reveal class="card spotlight relative overflow-hidden p-8 sm:p-10">
+				<div data-reveal data-tilt class="card spotlight relative overflow-hidden p-8 sm:p-10">
 					<div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-teal-400/10 blur-3xl"></div>
 					<div class="grid grid-cols-1 items-end gap-8 sm:grid-cols-[auto_1fr]">
 						<div>
@@ -401,13 +386,14 @@ const externalIcon =
 					<p class="section-num">05</p>
 					<h3 id="activity-title" data-split class="section-title">LeetCode &amp; GitHub</h3>
 					<p class="section-sub">Practice and output, live.</p>
+					<span class="section-meter" aria-hidden="true"><span></span></span>
 				</header>
 				<div class="grid grid-cols-1 gap-4">
-					<div data-reveal class="card spotlight min-w-0 overflow-hidden p-6">
+					<div data-reveal data-tilt class="card spotlight min-w-0 overflow-hidden p-6">
 						<h4 class="mb-4 text-sm font-bold text-zinc-100">GitHub Contributions</h4>
 						<GitHubCard client:only="react" />
 					</div>
-					<div data-reveal style="--delay:70ms" class="card spotlight p-6">
+					<div data-reveal style="--delay:70ms" data-tilt class="card spotlight p-6">
 						<h4 class="mb-4 text-sm font-bold text-zinc-100">LeetCode Profile</h4>
 						<LeetCodeCard client:only="react" />
 					</div>
@@ -442,7 +428,7 @@ const externalIcon =
 </Layout>
 
 <script>
-	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const reduceMotion = (window.matchMedia('(prefers-reduced-motion: reduce)').matches && !location.search.includes('motion'));
 
 	// ---------- Split section titles into words for a staggered rise ----------
 	document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
@@ -513,8 +499,6 @@ const externalIcon =
 
 	// ---------- Scroll-linked effects (single rAF loop) ----------
 	const hero = document.querySelector<HTMLElement>('[data-hero]');
-	const rows = [...document.querySelectorAll<HTMLElement>('[data-marquee]')];
-	const marquee = document.querySelector<HTMLElement>('.marquee');
 	const timeline = document.querySelector<HTMLElement>('[data-timeline]');
 	const fill = document.querySelector<HTMLElement>('[data-timeline-fill]');
 	const items = [...document.querySelectorAll<HTMLElement>('[data-timeline-item]')];
@@ -527,18 +511,6 @@ const externalIcon =
 		if (hero && !reduceMotion) {
 			const p = Math.min(1, Math.max(0, window.scrollY / (vh * 0.9)));
 			hero.style.setProperty('--hp', p.toFixed(3));
-		}
-
-		if (marquee) {
-			const r = marquee.getBoundingClientRect();
-			if (r.bottom > 0 && r.top < vh) {
-				const offset = (vh - r.top) * 0.35;
-				rows.forEach((row) => {
-					const dir = Number(row.dataset.marquee);
-					const base = dir < 0 ? 0 : -row.scrollWidth / 3;
-					row.style.transform = `translate3d(${base + dir * offset}px,0,0)`;
-				});
-			}
 		}
 
 		if (timeline && fill) {
@@ -575,21 +547,6 @@ const externalIcon =
 		transform: translate3d(0, calc(var(--hp, 0) * 60px), 0) scale(calc(1 - var(--hp, 0) * 0.04));
 		transform-origin: 50% 0;
 		will-change: transform, opacity;
-	}
-
-	/* Marquee */
-	.marquee {
-		mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-		-webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-	}
-	.marquee-row { will-change: transform; }
-	.text-outline {
-		color: transparent;
-		-webkit-text-stroke: 1px rgba(161, 161, 170, 0.35);
-	}
-	.text-outline-thin {
-		color: transparent;
-		-webkit-text-stroke: 1px rgba(45, 212, 191, 0.4);
 	}
 
 	/* Sections: one consistent two-column grid, sticky heading on the left */

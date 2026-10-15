@@ -1,0 +1,177 @@
+---
+// Site-wide motion & feel: inertia scrolling, section progress meters, card tilt,
+// magnetic CTAs and haptic feedback. Everything is skipped under prefers-reduced-motion.
+---
+
+<script>
+	import Lenis from 'lenis';
+	import 'lenis/dist/lenis.css';
+
+	const reduceMotion = (window.matchMedia('(prefers-reduced-motion: reduce)').matches && !location.search.includes('motion'));
+	const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+	const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
+	// ---------- Inertia scrolling ----------
+	if (!reduceMotion) {
+		const lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 0.9, smoothWheel: true });
+		(window as any).__lenis = lenis;
+		const raf = (t: number) => {
+			lenis.raf(t);
+			requestAnimationFrame(raf);
+		};
+		requestAnimationFrame(raf);
+
+		const palette = document.getElementById('palette') as HTMLDialogElement | null;
+		if (palette) {
+			new MutationObserver(() => (palette.open ? lenis.stop() : lenis.start())).observe(palette, {
+				attributes: true,
+				attributeFilter: ['open'],
+			});
+		}
+
+		document.addEventListener('click', (e) => {
+			const a = (e.target as HTMLElement).closest?.('a[href^="#"]') as HTMLAnchorElement | null;
+			if (!a) return;
+			const href = a.getAttribute('href')!;
+			const target = href === '#top' ? 0 : document.querySelector<HTMLElement>(href);
+			if (target === null) return;
+			e.preventDefault();
+			lenis.scrollTo(target, { offset: -88, duration: 1.2 });
+			history.replaceState(null, '', href === '#top' ? location.pathname : href);
+		});
+	}
+
+	// ---------- Section progress meters ----------
+	const sections = [...document.querySelectorAll<HTMLElement>('.section')];
+	let ticking = false;
+	const updateMeters = () => {
+		ticking = false;
+		const anchor = window.innerHeight * 0.55;
+		for (const s of sections) {
+			const r = s.getBoundingClientRect();
+			const p = Math.min(1, Math.max(0, (anchor - r.top) / r.height));
+			s.style.setProperty('--sp', p.toFixed(3));
+		}
+	};
+	addEventListener(
+		'scroll',
+		() => {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(updateMeters);
+			}
+		},
+		{ passive: true }
+	);
+	updateMeters();
+
+	// Mark reveal elements as settled so tilt can take over their transform without fighting the entrance.
+	const settle = (el: HTMLElement) => {
+		const delay = parseFloat(getComputedStyle(el).getPropertyValue('--delay')) || 0;
+		setTimeout(() => el.classList.add('revealed'), 850 + delay);
+	};
+	const revealWatcher = new MutationObserver((records) => {
+		for (const r of records) {
+			const el = r.target as HTMLElement;
+			if (el.classList.contains('is-visible') && !el.classList.contains('revealed')) settle(el);
+		}
+	});
+	document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+		if (el.classList.contains('is-visible')) settle(el);
+		else revealWatcher.observe(el, { attributes: true, attributeFilter: ['class'] });
+	});
+
+	if (!reduceMotion && finePointer) {
+		// ---------- Card tilt ----------
+		const MAX = 3.5;
+		document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
+			card.addEventListener('pointermove', (e) => {
+				const r = card.getBoundingClientRect();
+				const x = (e.clientX - r.left) / r.width - 0.5;
+				const y = (e.clientY - r.top) / r.height - 0.5;
+				card.style.setProperty('--ry', `${(x * MAX).toFixed(2)}deg`);
+				card.style.setProperty('--rx', `${(-y * MAX).toFixed(2)}deg`);
+			});
+			card.addEventListener('pointerleave', () => {
+				card.style.setProperty('--rx', '0deg');
+				card.style.setProperty('--ry', '0deg');
+			});
+		});
+
+		// ---------- Magnetic CTAs ----------
+		document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
+			el.addEventListener('pointermove', (e) => {
+				const r = el.getBoundingClientRect();
+				const dx = e.clientX - (r.left + r.width / 2);
+				const dy = e.clientY - (r.top + r.height / 2);
+				el.style.translate = `${dx * 0.18}px ${dy * 0.25}px`;
+			});
+			el.addEventListener('pointerleave', () => (el.style.translate = '0px 0px'));
+		});
+	}
+
+	// ---------- Haptics (devices with a vibration motor, e.g. Android) ----------
+	if (coarsePointer && 'vibrate' in navigator) {
+		document.addEventListener(
+			'pointerdown',
+			(e) => {
+				const t = (e.target as HTMLElement).closest?.('a, button, summary, [role="option"]');
+				if (!t) return;
+				navigator.vibrate(t.classList.contains('project-trigger') ? 12 : 8);
+			},
+			{ passive: true }
+		);
+	}
+</script>
+
+<style is:global>
+	/* Section progress meter under each sticky heading */
+	.section-meter {
+		display: block;
+		margin-top: 1.5rem;
+		height: 2px;
+		width: 100%;
+		max-width: 11rem;
+		overflow: hidden;
+		border-radius: 2px;
+		background: rgba(255, 255, 255, 0.06);
+	}
+	.section-meter > span {
+		display: block;
+		height: 100%;
+		background: linear-gradient(90deg, #2dd4bf, #a78bfa);
+		transform: scaleX(var(--sp, 0));
+		transform-origin: left;
+		box-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
+	}
+
+	/* Tilt: only once the entrance animation has settled */
+	@media (hover: hover) and (pointer: fine) {
+		[data-tilt]:not([data-reveal]),
+		.js [data-tilt][data-reveal].revealed {
+			transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+			transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+			transition-delay: 0ms;
+		}
+	}
+
+	/* Magnetic buttons ease back */
+	[data-magnetic] {
+		transition: translate 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+	}
+
+	/* Tactile press */
+	a.rounded-xl:active,
+	a.rounded-lg:active,
+	button:active,
+	.chip:active {
+		scale: 0.97;
+	}
+	.project-trigger:active {
+		scale: 0.995;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.section-meter > span { transform: scaleX(var(--sp, 0)); }
+	}
+</style>

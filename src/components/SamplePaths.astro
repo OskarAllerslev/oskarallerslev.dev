@@ -28,7 +28,7 @@
 	const ctx = canvas?.getContext('2d');
 
 	if (root && canvas && ctx) {
-		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const reduceMotion = (window.matchMedia('(prefers-reduced-motion: reduce)').matches && !location.search.includes('motion'));
 		const N_PATHS = 9;
 		const STEPS = 260;
 		const MU = 0.06;

@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/react';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import 'katex/dist/katex.min.css';
+import Interactions from '../components/Interactions.astro';
 
 interface Props {
 	title: string;
@@ -77,7 +78,8 @@ const paletteItems = [
 					<span class="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-teal-400 to-violet-500 font-mono text-[11px] font-bold text-zinc-950 shadow-[0_0_20px_-4px_rgba(45,212,191,0.6)]">OA</span>
 					<span class="hidden text-sm font-semibold tracking-tight text-zinc-200 transition group-hover:text-white sm:inline">Oskar Allerslev</span>
 				</a>
-				<ul class="hidden items-center gap-1 md:flex">
+				<ul class="relative hidden items-center gap-1 md:flex">
+					<span class="nav-pill" aria-hidden="true"></span>
 					{navLinks.map((l) => (
 						<li>
 							<a href={l.href} data-nav-link class="nav-link relative rounded-lg px-3 py-1.5 text-[13px] font-medium text-zinc-400 transition hover:text-zinc-100">
@@ -128,7 +130,7 @@ const paletteItems = [
 					/>
 					<kbd class="rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[10px] text-zinc-500">Esc</kbd>
 				</div>
-				<ul id="palette-list" role="listbox" class="max-h-[50vh] overflow-y-auto p-2">
+				<ul id="palette-list" data-lenis-prevent role="listbox" class="max-h-[50vh] overflow-y-auto p-2">
 					{paletteItems.map((item, i) => (
 						<li
 							role="option"
@@ -154,11 +156,12 @@ const paletteItems = [
 			</div>
 		</dialog>
 
+		<Interactions />
 		<Analytics />
 
 		<script is:inline>
 			(() => {
-				const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				const reduceMotion = (window.matchMedia('(prefers-reduced-motion: reduce)').matches && !location.search.includes('motion'));
 
 				// Keyboard hint per platform
 				if (/Mac|iPhone|iPad/.test(navigator.platform)) {
@@ -193,8 +196,33 @@ const paletteItems = [
 					revealEls.forEach((el) => io.observe(el));
 				}
 
-				// Active nav link
+				// Active nav link + sliding pill
 				const links = [...document.querySelectorAll('[data-nav-link]')];
+				const pill = document.querySelector('.nav-pill');
+				const movePill = () => {
+					if (!pill) return;
+					const a = links.find((l) => l.classList.contains('is-active'));
+					if (!a) {
+						pill.style.opacity = '0';
+						return;
+					}
+					pill.style.opacity = '1';
+					pill.style.width = `${a.offsetWidth}px`;
+					pill.style.transform = `translateX(${a.offsetLeft}px)`;
+				};
+				addEventListener('resize', movePill);
+				// Back up at the hero: clear the highlight
+				addEventListener(
+					'scroll',
+					() => {
+						const first = document.querySelector(links[0]?.getAttribute('href'));
+						if (first && first.getBoundingClientRect().top > innerHeight * 0.5) {
+							links.forEach((l) => l.classList.remove('is-active'));
+							movePill();
+						}
+					},
+					{ passive: true }
+				);
 				const sections = links.map((l) => document.querySelector(l.getAttribute('href'))).filter(Boolean);
 				if ('IntersectionObserver' in window && sections.length) {
 					const navIo = new IntersectionObserver(
@@ -202,6 +230,7 @@ const paletteItems = [
 							entries.forEach((e) => {
 								if (!e.isIntersecting) return;
 								links.forEach((l) => l.classList.toggle('is-active', l.getAttribute('href') === `#${e.target.id}`));
+								movePill();
 							});
 						},
 						{ rootMargin: '-45% 0px -50% 0px' }
@@ -245,7 +274,9 @@ const paletteItems = [
 					const { href, kind } = item.dataset;
 					dialog.close();
 					if (kind === 'anchor') {
-						document.querySelector(href)?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+						const target = href === '#top' ? 0 : document.querySelector(href);
+					if (window.__lenis) window.__lenis.scrollTo(target, { offset: -88 });
+					else (target || document.body).scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
 						history.replaceState(null, '', href === '#top' ? location.pathname : href);
 					} else if (kind === 'download') {
 						const a = document.createElement('a');
@@ -355,7 +386,18 @@ const paletteItems = [
 	}
 	.nav-link.is-active {
 		color: #f4f4f5;
-		background: rgba(255, 255, 255, 0.05);
+	}
+	.nav-pill {
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 100%;
+		border-radius: 0.5rem;
+		background: rgba(255, 255, 255, 0.06);
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+		opacity: 0;
+		pointer-events: none;
+		transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), width 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
 	}
 	.nav-link.is-active::after {
 		content: '';
