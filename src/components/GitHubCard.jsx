@@ -12,14 +12,14 @@ export default function GitHubCard() {
 
 	return (
 		<div className="w-full overflow-x-auto no-scrollbar scroll-smooth py-2">
-			<div className="min-w-[670px] md:min-w-[670px] lg:min-w-0 lg:w-full flex justify-center font-mono">
+			<div className="min-w-[640px] lg:min-w-0 lg:w-full flex justify-center font-mono">
 				<GitHubCalendar
 					username="oskarallerslev"
 					colorScheme="dark"
 					theme={customTheme}
 					labels={labels}
-					blockSize={11}
-					blockMargin={4}
+					blockSize={9}
+					blockMargin={3}
 					fontSize={12}
 					hideColorLegend
 					hideTotalCount={false}

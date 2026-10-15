@@ -1,302 +1,798 @@
 ---
+import katex from 'katex';
 import Layout from '../layouts/Layout.astro';
 import RustApiExplorer from '../components/RustApiExplorer.jsx';
 import FbmSimulator from '../components/FbmSimulator.jsx';
 import GitHubCard from '../components/GitHubCard.jsx';
 import LeetCodeCard from '../components/LeetCodeCard.jsx';
 import ProfileImageCard from '../components/ProfileImageCard.jsx';
+import SamplePaths from '../components/SamplePaths.astro';
 
-// Rebuild of index.astro into premium executive dashboard layout
+const tex = (src: string) => katex.renderToString(src, { displayMode: true, throwOnError: true, output: 'html' });
+
+const timeline = [
+	{
+		kind: 'Work',
+		title: 'Actuarial Software Developer',
+		org: 'Festina Finance',
+		dates: 'Jul 2026 – Present',
+		current: true,
+		body: 'Role focusing on financial software, risk management engines, and scalable investment infrastructure.',
+	},
+	{
+		kind: 'Work',
+		title: 'Student Actuary, Insurance Insights',
+		org: 'PFA Pension',
+		dates: 'Nov 2024 – Jun 2026',
+		body: 'Developed internal actuarial packages (Lifepack), engineered automated DevOps ETL pipelines, and built quantitative stakeholder reporting tools.',
+	},
+	{
+		kind: 'Education',
+		title: 'MSc Actuarial Mathematics',
+		org: 'University of Copenhagen',
+		dates: 'Sep 2025 – Jun 2027 (exp.)',
+		current: true,
+		body: 'Focus: Advanced probability, QRM, ML, financial econometrics.',
+	},
+	{
+		kind: 'Education',
+		title: 'BSc Actuarial Mathematics',
+		org: 'University of Copenhagen',
+		dates: 'Sep 2022 – Jun 2025',
+		body: 'Thesis: Hybrid insurance pricing framework.<br />Highlight: Fire severity modeling using Extreme Value Theory (EVT).',
+	},
+];
+
+const languages = ['Java', 'R (Advanced/Package Dev)', 'SQL', 'C++', 'Python', 'LaTeX'];
+const tools = ['Git', 'Gradle', 'Azure DevOps', 'VS Code', 'Shiny', 'Tidyverse'];
+
+const quantMath = [
+	{
+		title: 'Measure-theoretic probability',
+		body: 'σ-algebras, filtrations, conditional expectation and martingales — the rigorous footing the rest is built on.',
+		formula: tex(String.raw`\mathbb{E}\left[M_t \mid \mathcal{F}_s\right] = M_s,\qquad s \le t`),
+	},
+	{
+		title: 'Brownian motion & Itô calculus',
+		body: 'Quadratic variation, Itô’s formula and SDEs — from geometric Brownian motion (the paths at the top) to rough volatility.',
+		formula: tex(String.raw`df(t,X_t) = \partial_t f\,dt + \partial_x f\,dX_t + \tfrac{1}{2}\,\partial_{xx} f\,d\langle X\rangle_t`),
+	},
+	{
+		title: 'Arbitrage-free pricing',
+		body: 'Risk-neutral valuation under ℚ, change of measure via Girsanov, and Monte Carlo when no closed form exists.',
+		formula: tex(String.raw`V_t = \mathbb{E}^{\mathbb{Q}}\!\left[\, e^{-\int_t^T r_s\,ds}\, H \;\middle|\; \mathcal{F}_t \right]`),
+	},
+	{
+		title: 'Life insurance mathematics',
+		body: 'Multi-state models and Thiele’s equation for reserves — the math behind Lifepack and the life & pension calculations I implement in Java.',
+		formula: tex(String.raw`\tfrac{d}{dt}V(t) = r(t)\,V(t) + \pi(t) - \mu(t)\big(b(t) - V(t)\big)`),
+	},
+	{
+		title: 'Extreme value theory',
+		body: 'Peaks-over-threshold with a generalised Pareto tail, used to model fire-claim severity.',
+		formula: tex(String.raw`\mathbb{P}(X-u>y \mid X>u) \approx \Big(1+\xi\,\tfrac{y}{\beta}\Big)^{-1/\xi}`),
+	},
+];
+const quantAlso = ['GLM', 'Time Series (Cointegration)', 'Machine Learning'];
+
+const marqueeA = ['Actuarial Mathematics', 'Stochastic Calculus', 'Risk Management', 'Pricing Engines'];
+const marqueeB = ['Java', 'R', 'C++', 'Rust', 'SQL', 'Python'];
+
+const externalIcon =
+	'<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9" /></svg>';
 ---
 
 <Layout title="Oskar Allerslev | Portfolio">
-	<main class="max-w-4xl mx-auto px-6 py-20 relative z-10 space-y-20">
-		<!-- Hero Section -->
-		<section class="grid grid-cols-1 md:grid-cols-[1fr_240px] gap-8 items-center">
-			<div class="space-y-6">
-				<h1 class="text-5xl font-extrabold tracking-tight text-zinc-100 sm:text-6xl">Oskar Allerslev</h1>
-				<h2 class="text-xl font-semibold tracking-tight text-teal-400 sm:text-2xl">
-					Quantitative Infrastructure & Actuarial Engineering
-				</h2>
-				<p class="text-base text-zinc-400 leading-relaxed max-w-2xl">
-					MSc Actuarial Mathematics student at UCPH and Student Actuary at PFA Pension. I specialize
-					in quantitative risk management (QRM), stochastic calculus, and machine learning. My focus
-					is translating advanced mathematical theory into scalable, low-latency pricing engines and
-					infrastructure using C++, Rust, and R.
-				</p>
-				<div class="flex flex-wrap items-center gap-4 pt-2">
-					<a
-						href="/CV_Oskar_Allerslev.pdf"
-						download="CV_Oskar_Allerslev.pdf"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="border border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 hover:border-zinc-600 transition px-4 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-zinc-100 inline-flex items-center"
-					>
-						Download CV (PDF)
-					</a>
-					<a
-						href="https://dk.linkedin.com/in/oskar-allerslev-2583031ba"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="border border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 hover:border-zinc-600 transition px-4 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-zinc-100 inline-flex items-center"
-					>
-						LinkedIn
-					</a>
+	<main class="relative z-10">
+		<!-- ================= Hero ================= -->
+		<section class="relative isolate mx-auto max-w-6xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40" aria-labelledby="hero-title">
+			<SamplePaths />
+			<div data-hero class="hero-parallax grid grid-cols-1 items-center gap-12 md:grid-cols-[1fr_280px]">
+				<div class="space-y-7">
+					<div data-reveal class="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-400 backdrop-blur">
+						<span class="h-1.5 w-1.5 rounded-full bg-teal-400 shadow-[0_0_10px_#2dd4bf]"></span>
+						Portfolio
+					</div>
+					<h1 id="hero-title" data-reveal style="--delay:60ms" class="text-gradient text-[clamp(2.75rem,8vw,5.25rem)] font-extrabold leading-[0.98] tracking-[-0.045em]">
+						Oskar Allerslev
+					</h1>
+					<h2 data-reveal style="--delay:120ms" class="text-xl font-semibold tracking-tight text-zinc-200 sm:text-2xl">
+						Quantitative Infrastructure <span class="text-zinc-600">&amp;</span>
+						<span class="bg-gradient-to-r from-teal-300 to-violet-300 bg-clip-text text-transparent">Actuarial Engineering</span>
+					</h2>
+					<p data-reveal style="--delay:180ms" class="max-w-2xl text-[15px] leading-relaxed text-zinc-400 sm:text-base">
+						MSc Actuarial Mathematics student at UCPH and Actuarial Software Developer at Festina Finance. I specialize
+						in quantitative risk management (QRM), stochastic calculus, and machine learning. My focus
+						is translating advanced mathematical theory into scalable, low-latency pricing engines and
+						infrastructure using C++, Rust, and R.
+					</p>
+					<div data-reveal style="--delay:240ms" class="flex flex-wrap items-center gap-3 pt-1">
+						<a
+							href="/CV_Oskar_Allerslev.pdf"
+							download="CV_Oskar_Allerslev.pdf"
+							class="group inline-flex items-center gap-2 rounded-xl bg-zinc-100 px-4 py-2.5 text-sm font-semibold text-zinc-950 shadow-[0_8px_30px_-12px_rgba(255,255,255,0.5)] transition hover:-translate-y-0.5 hover:bg-white"
+						>
+							<svg class="h-4 w-4 transition group-hover:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0-5-5m5 5 5-5M5 20h14" /></svg>
+							Download CV (PDF)
+						</a>
+						<a
+							href="https://www.linkedin.com/in/oskarallerslev"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 backdrop-blur transition hover:-translate-y-0.5 hover:border-white/20 hover:text-white"
+						>
+							<svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>
+							LinkedIn
+						</a>
+						<button
+							type="button"
+							data-palette-open
+							class="hidden items-center gap-2 rounded-xl px-3 py-2.5 font-mono text-[12px] text-zinc-500 transition hover:text-zinc-300 sm:inline-flex"
+						>
+							or press <kbd data-kbd class="rounded border border-white/10 bg-white/5 px-1.5 text-[11px] text-zinc-400">Ctrl K</kbd>
+						</button>
+					</div>
+				</div>
+
+				<div data-reveal style="--delay:200ms" class="ring-glow mx-auto h-64 w-64 rounded-[1.75rem] md:ml-auto md:h-[280px] md:w-[280px]">
+					<div class="relative h-full w-full overflow-hidden rounded-[calc(1.75rem-1px)] bg-zinc-900">
+						<ProfileImageCard />
+					</div>
 				</div>
 			</div>
-			<!-- Profile Card -->
-			<div class="h-60 w-60 md:h-64 md:w-64 mx-auto md:ml-auto rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900/20 backdrop-blur-sm relative">
-				<ProfileImageCard client:only="react" />
-			</div>
+
+			<a href="#experience" class="group absolute bottom-2 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-zinc-600 transition hover:text-zinc-300 md:flex" aria-label="Scroll to experience">
+				<span class="font-mono text-[10px] uppercase tracking-[0.25em]">Scroll</span>
+				<span class="h-8 w-px overflow-hidden bg-white/10">
+					<span class="block h-3 w-px animate-[scrollcue_1.8s_ease-in-out_infinite] bg-teal-400"></span>
+				</span>
+			</a>
 		</section>
 
-		<!-- Dashboard Grid -->
-		<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-			<!-- Experience & Education Column -->
-			<section class="space-y-6">
-				<h3 class="text-xs font-bold uppercase tracking-wider text-zinc-405 border-b border-zinc-850 pb-2">
-					Experience & Education
-				</h3>
-				<div class="space-y-6">
-					<!-- Festina Finance -->
-					<div class="border-l border-zinc-800 pl-4 space-y-2">
-						<div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
-							<h4 class="font-bold text-zinc-100 text-sm">Quantitative / Software Engineer</h4>
-							<span class="text-[11px] text-zinc-500 font-mono">July 2026 - Present</span>
+		<!-- ================= Scroll-linked marquee ================= -->
+		<div class="marquee relative select-none overflow-hidden border-y border-white/[0.05] py-6" aria-hidden="true">
+			<div data-marquee="-1" class="marquee-row flex w-max gap-10 whitespace-nowrap">
+				{[...marqueeA, ...marqueeA, ...marqueeA].map((w, i) => (
+					<span class:list={['text-4xl font-extrabold tracking-tight sm:text-6xl', i % 2 ? 'text-outline' : 'text-zinc-800']}>
+						{w}<span class="ml-10 text-teal-400/60">✦</span>
+					</span>
+				))}
+			</div>
+			<div data-marquee="1" class="marquee-row mt-3 flex w-max gap-10 whitespace-nowrap">
+				{[...marqueeB, ...marqueeB, ...marqueeB, ...marqueeB].map((w, i) => (
+					<span class:list={['font-mono text-2xl font-semibold sm:text-3xl', i % 2 ? 'text-zinc-700' : 'text-outline-thin']}>
+						{w}<span class="ml-10 text-violet-400/50">/</span>
+					</span>
+				))}
+			</div>
+		</div>
+
+		<div class="mx-auto max-w-6xl px-5 sm:px-8">
+			<!-- ================= 01 Experience ================= -->
+			<section id="experience" class="section" aria-labelledby="exp-title">
+				<header class="section-head">
+					<p class="section-num">01</p>
+					<h3 id="exp-title" data-split class="section-title">Experience &amp; Education</h3>
+					<p class="section-sub">Industry roles and degrees, newest first.</p>
+				</header>
+
+				<ol data-timeline class="relative space-y-4">
+					<span class="absolute bottom-6 left-[11px] top-6 w-px bg-white/[0.07]" aria-hidden="true"></span>
+					<span data-timeline-fill class="timeline-fill absolute bottom-6 left-[11px] top-6 w-px origin-top bg-gradient-to-b from-teal-300 via-teal-400 to-violet-400" aria-hidden="true"></span>
+					{timeline.map((t, i) => (
+						<li data-reveal data-timeline-item style={`--delay:${i * 60}ms`} class="relative pl-11">
+							<span class="timeline-dot absolute left-0 top-6 grid h-6 w-6 place-items-center rounded-full border border-white/15 bg-zinc-950 transition-all duration-500">
+								<span class="h-1.5 w-1.5 rounded-full bg-zinc-500 transition-colors duration-500"></span>
+							</span>
+							<article class="card spotlight p-6">
+								<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+									<h4 class="text-base font-semibold text-zinc-100">{t.title}</h4>
+									<span class="shrink-0 font-mono text-[11px] text-zinc-500">{t.dates}</span>
+								</div>
+								<div class="mt-1.5 flex items-center gap-2 text-[13px] font-medium text-teal-300/90">
+									{t.org}
+									<span class="rounded-full border border-white/[0.07] px-1.5 py-px font-mono text-[9px] uppercase tracking-wider text-zinc-500">{t.kind}</span>
+									{t.current && <span class="rounded-full bg-teal-400/10 px-1.5 py-px font-mono text-[9px] uppercase tracking-wider text-teal-300">Now</span>}
+								</div>
+								<p class="mt-3 text-[13.5px] leading-relaxed text-zinc-400" set:html={t.body} />
+							</article>
+						</li>
+					))}
+				</ol>
+			</section>
+
+			<!-- ================= 02 Toolkit ================= -->
+			<section id="toolkit" class="section" aria-labelledby="toolkit-title">
+				<header class="section-head">
+					<p class="section-num">02</p>
+					<h3 id="toolkit-title" data-split class="section-title">Core Toolkit</h3>
+					<p class="section-sub">What I build with, and the mathematics I build on.</p>
+				</header>
+
+				<div class="space-y-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						<div data-reveal class="card spotlight p-6">
+							<h4 class="card-label"><span class="card-icon">{'{ }'}</span>Languages</h4>
+							<div class="flex flex-wrap gap-2">{languages.map((l) => <span class="chip">{l}</span>)}</div>
 						</div>
-						<div class="text-xs text-teal-400 font-medium">Festina Finance</div>
-						<p class="text-xs text-zinc-400 leading-relaxed">
-							Incoming role focusing on financial software, risk management engines, and scalable investment infrastructure.
-						</p>
+						<div data-reveal style="--delay:70ms" class="card spotlight p-6">
+							<h4 class="card-label"><span class="card-icon">⌁</span>Tools &amp; Infrastructure</h4>
+							<div class="flex flex-wrap gap-2">{tools.map((l) => <span class="chip">{l}</span>)}</div>
+						</div>
 					</div>
 
-					<!-- PFA -->
-					<div class="border-l border-zinc-800 pl-4 space-y-2">
-						<div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
-							<h4 class="font-bold text-zinc-100 text-sm">Student Actuary, Insurance Insights</h4>
-							<span class="text-[11px] text-zinc-550 font-mono">Nov 2024 - June 2026</span>
-						</div>
-						<div class="text-xs text-teal-400 font-medium">PFA Pension</div>
-						<p class="text-xs text-zinc-400 leading-relaxed">
-							Developed internal actuarial packages (Lifepack), engineered automated DevOps ETL pipelines, and built quantitative stakeholder reporting tools.
-						</p>
+					<div data-reveal class="pt-6">
+						<h4 class="card-label mb-4"><span class="card-icon">∑</span>Quantitative Math</h4>
 					</div>
-
-					<!-- MSc -->
-					<div class="border-l border-zinc-800 pl-4 space-y-2">
-						<div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
-							<h4 class="font-bold text-zinc-100 text-sm">MSc Actuarial Mathematics</h4>
-							<span class="text-[11px] text-zinc-550 font-mono">Sep 2024 - Present</span>
-						</div>
-						<div class="text-xs text-teal-400 font-medium">University of Copenhagen</div>
-						<p class="text-xs text-zinc-400">
-							Focus: Advanced probability, QRM, ML, financial econometrics.
-						</p>
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						{quantMath.map((q, i) => (
+							<article data-reveal style={`--delay:${(i % 2) * 70}ms`} class="card spotlight flex flex-col gap-5 p-6">
+								<div>
+								<h5 class="text-[15px] font-semibold text-zinc-100">{q.title}</h5>
+								<p class="mt-2 text-[13px] leading-relaxed text-zinc-400">{q.body}</p>
+								</div>
+								<div class="formula no-scrollbar mt-auto overflow-x-auto rounded-xl border border-white/[0.05] bg-black/30 px-3 pt-1 text-zinc-200" set:html={q.formula} />
+							</article>
+						))}
+						<article data-reveal style="--delay:70ms" class="card spotlight flex flex-col justify-between gap-4 p-6">
+							<div>
+								<h5 class="text-[15px] font-semibold text-zinc-100">Statistics &amp; learning</h5>
+								<p class="mt-2 text-[13px] leading-relaxed text-zinc-400">Applied daily for pricing, forecasting and reporting.</p>
+							</div>
+							<div class="flex flex-wrap gap-2">{quantAlso.map((l) => <span class="chip">{l}</span>)}</div>
+						</article>
 					</div>
+				</div>
+			</section>
 
-					<!-- BSc -->
-					<div class="border-l border-zinc-800 pl-4 space-y-2">
-						<div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
-							<h4 class="font-bold text-zinc-100 text-sm">BSc Actuarial Mathematics</h4>
-							<span class="text-[11px] text-zinc-550 font-mono">Sep 2021 - Jun 2024</span>
+			<!-- ================= 03 Projects ================= -->
+			<section id="projects" class="section" aria-labelledby="projects-title">
+				<header class="section-head">
+					<p class="section-num">03</p>
+					<h3 id="projects-title" data-split class="section-title">Featured Infrastructure</h3>
+					<p class="section-sub">Open a project to read more and try the live demos.</p>
+					<button type="button" data-expand-all class="mt-5 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 font-mono text-[11px] text-zinc-400 transition hover:border-white/20 hover:text-zinc-100">
+						<span data-expand-label>Expand all</span>
+					</button>
+				</header>
+
+				<div class="space-y-3" data-accordion>
+					<!-- Rust API -->
+					<article data-reveal class="project card">
+						<button type="button" class="project-trigger" aria-expanded="false" aria-controls="p-rust" id="p-rust-btn">
+							<span class="project-index">01</span>
+							<span class="min-w-0 flex-1 text-left">
+								<span class="block text-[17px] font-semibold text-zinc-100">First Rust API (Stock VaR)</span>
+								<span class="mt-1 block font-mono text-[11px] uppercase tracking-wider text-zinc-500">Live API demo</span>
+							</span>
+							<span class="hidden gap-2 md:flex">{['Rust', 'Axum', 'API'].map((t) => <span class="chip">{t}</span>)}</span>
+							<span class="project-plus" aria-hidden="true"></span>
+						</button>
+						<div class="project-panel" id="p-rust" role="region" aria-labelledby="p-rust-btn">
+							<div class="overflow-hidden">
+								<div class="space-y-4 px-6 pb-6 sm:pl-[4.75rem]">
+									<p class="max-w-3xl text-sm leading-relaxed text-zinc-400">
+										A high-performance backend built in Rust using Axum. Fetches ticker data and calculates Historical Value at Risk (VaR) based on continuous returns and empirical quantiles.
+									</p>
+									<a href="https://github.com/OskarAllerslev/first-rust-api" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub <span set:html={externalIcon} /></a>
+									<RustApiExplorer client:visible />
+								</div>
+							</div>
 						</div>
-						<div class="text-xs text-teal-400 font-medium">University of Copenhagen</div>
-						<p class="text-xs text-zinc-400 leading-relaxed">
-							Thesis: Hybrid insurance pricing framework.<br />
-							Highlight: Fire severity modeling using Extreme Value Theory (EVT).
+					</article>
+
+					<!-- Rough vol -->
+					<article data-reveal class="project card">
+						<button type="button" class="project-trigger" aria-expanded="false" aria-controls="p-rough" id="p-rough-btn">
+							<span class="project-index">02</span>
+							<span class="min-w-0 flex-1 text-left">
+								<span class="block text-[17px] font-semibold text-zinc-100">Rough Volatility Monte Carlo Pricer</span>
+								<span class="mt-1 block font-mono text-[11px] uppercase tracking-wider text-zinc-500">Research note</span>
+							</span>
+							<span class="hidden gap-2 md:flex">{['C++', 'Math', 'SDEs', 'fBM'].map((t) => <span class="chip">{t}</span>)}</span>
+							<span class="project-plus" aria-hidden="true"></span>
+						</button>
+						<div class="project-panel" id="p-rough" role="region" aria-labelledby="p-rough-btn">
+							<div class="overflow-hidden">
+								<div class="space-y-4 px-6 pb-6 sm:pl-[4.75rem]">
+									<p class="max-w-3xl text-sm leading-relaxed text-zinc-400">
+										Advanced derivative pricing framework based on fractional Brownian motions (fBM). Solves Stochastic Differential Equations (SDEs) to capture the roughness of electricity spot prices and financial markets.
+									</p>
+									<a href="https://github.com/OskarAllerslev/Rough-Volatility-Monte-Carlo-Pricer" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub <span set:html={externalIcon} /></a>
+									<FbmSimulator client:visible />
+								</div>
+							</div>
+						</div>
+					</article>
+
+					<!-- Nitor -->
+					<article data-reveal class="project card">
+						<button type="button" class="project-trigger" aria-expanded="false" aria-controls="p-nitor" id="p-nitor-btn">
+							<span class="project-index">03</span>
+							<span class="min-w-0 flex-1 text-left">
+								<span class="block text-[17px] font-semibold text-zinc-100">Nitor Energy Forecasting Competition 2026</span>
+								<span class="mt-1 block font-mono text-[11px] uppercase tracking-wider text-zinc-500">Competition</span>
+							</span>
+							<span class="hidden gap-2 md:flex">{['R', 'tidymodels', 'XGBoost'].map((t) => <span class="chip">{t}</span>)}</span>
+							<span class="project-plus" aria-hidden="true"></span>
+						</button>
+						<div class="project-panel" id="p-nitor" role="region" aria-labelledby="p-nitor-btn">
+							<div class="overflow-hidden">
+								<div class="space-y-4 px-6 pb-6 sm:pl-[4.75rem]">
+									<p class="max-w-3xl text-sm leading-relaxed text-zinc-400">
+										Predictive machine learning pipeline forecasting highly volatile energy spot prices across 6 distinct markets. Optimized for RMSE utilizing specialized XGBoost models and domain-specific meteorological features.
+									</p>
+									<div class="flex flex-wrap gap-2">{['R', 'tidymodels', 'XGBoost', 'Machine Learning'].map((t) => <span class="chip">{t}</span>)}</div>
+									<a href="https://github.com/OskarAllerslev/Nitor-energy-competition-2026" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub <span set:html={externalIcon} /></a>
+								</div>
+							</div>
+						</div>
+					</article>
+
+					<!-- Lifepack -->
+					<article data-reveal class="project card">
+						<button type="button" class="project-trigger" aria-expanded="false" aria-controls="p-lifepack" id="p-lifepack-btn">
+							<span class="project-index">04</span>
+							<span class="min-w-0 flex-1 text-left">
+								<span class="block text-[17px] font-semibold text-zinc-100">Lifepack (R Package)</span>
+								<span class="mt-1 block font-mono text-[11px] uppercase tracking-wider text-zinc-500">On CRAN</span>
+							</span>
+							<span class="hidden gap-2 md:flex">{['R', 'devtools', 'OOP'].map((t) => <span class="chip">{t}</span>)}</span>
+							<span class="project-plus" aria-hidden="true"></span>
+						</button>
+						<div class="project-panel" id="p-lifepack" role="region" aria-labelledby="p-lifepack-btn">
+							<div class="overflow-hidden">
+								<div class="space-y-4 px-6 pb-6 sm:pl-[4.75rem]">
+									<p class="max-w-3xl text-sm leading-relaxed text-zinc-400">
+										Comprehensive R package for life insurance mathematics. Implements robust object-oriented programming (OOP), unit testing, and full roxygen2 documentation for production use.
+									</p>
+									<div class="max-w-2xl overflow-hidden rounded-xl border border-white/[0.06] bg-black/40">
+										<div class="flex items-center gap-1.5 border-b border-white/[0.05] px-3 py-2">
+											<span class="h-2 w-2 rounded-full bg-zinc-700"></span>
+											<span class="h-2 w-2 rounded-full bg-zinc-700"></span>
+											<span class="h-2 w-2 rounded-full bg-zinc-700"></span>
+											<span class="ml-2 font-mono text-[10px] text-zinc-600">R console</span>
+										</div>
+										<div class="no-scrollbar overflow-x-auto p-4 font-mono text-[11.5px] leading-relaxed">
+											<div class="text-zinc-300"><span class="text-teal-400">&gt;</span> library(lifepack)</div>
+											<div class="whitespace-nowrap text-zinc-400"><span class="text-teal-400">&gt;</span> Lambda &lt;- function(x) matrix(c(-0.1, 0.1, 0.05, -0.05), 2, 2)</div>
+											<div class="whitespace-nowrap text-zinc-400"><span class="text-teal-400">&gt;</span> R &lt;- function(x, mu) matrix(c(mu, 0, 0, mu), 2, 2)</div>
+											<div class="whitespace-nowrap text-zinc-400"><span class="text-teal-400">&gt;</span> equiv_premium(0, 80, Lambda, R, dR, 0.05, 0.03, 100)</div>
+											<div class="text-terminal-green">[1] 0.04512</div>
+										</div>
+									</div>
+									<div class="flex flex-wrap items-center gap-3">
+										<a href="https://github.com/OskarAllerslev/lifepack" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub <span set:html={externalIcon} /></a>
+										<a href="https://cran.r-project.org/web/packages/lifepack/index.html" target="_blank" rel="noopener noreferrer" class="project-link">CRAN <span set:html={externalIcon} /></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</article>
+				</div>
+			</section>
+
+			<!-- ================= 04 Beyond code ================= -->
+			<section id="beyond" class="section" aria-labelledby="beyond-title">
+				<header class="section-head">
+					<p class="section-num">04</p>
+					<h3 id="beyond-title" data-split class="section-title">Beyond Code</h3>
+					<p class="section-sub">Optimization outside the terminal.</p>
+				</header>
+				<div data-reveal class="card spotlight relative overflow-hidden p-8 sm:p-10">
+					<div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-teal-400/10 blur-3xl"></div>
+					<div class="grid grid-cols-1 items-end gap-8 sm:grid-cols-[auto_1fr]">
+						<div>
+							<div class="font-mono text-[clamp(3.5rem,10vw,6rem)] font-bold leading-none tracking-tight">
+								<span data-count-to="30.09" class="bg-gradient-to-br from-white to-teal-200 bg-clip-text text-transparent">30.09</span><span class="text-teal-300/70">s</span>
+							</div>
+							<p class="mt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-500">50m Breaststroke · Personal Best</p>
+						</div>
+						<p class="max-w-md text-[14px] leading-relaxed text-zinc-400">
+							Applying data-driven optimization outside the terminal. Elite sprint swimmer utilizing structured biohacking and sleep analytics for peak performance. Personal Best: <span class="font-semibold text-teal-300">30.09s</span> in 50m Breaststroke at the Danish Open.
 						</p>
 					</div>
 				</div>
 			</section>
 
-			<!-- Core Toolkit & Beyond Code Column -->
-			<div class="space-y-12">
-				<!-- Core Toolkit -->
-				<section class="space-y-6">
-					<h3 class="text-xs font-bold uppercase tracking-wider text-zinc-405 border-b border-zinc-850 pb-2">
-						Core Toolkit
-					</h3>
-					<div class="space-y-6">
-						<div>
-							<h4 class="text-xs font-semibold text-zinc-300 uppercase mb-2 font-mono tracking-wider">Languages</h4>
-							<div class="flex flex-wrap gap-2">
-								{['R (Advanced/Package Dev)', 'SQL', 'Python', 'C++', 'LaTeX'].map(lang => (
-									<span class="rounded bg-teal-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-teal-400 border border-teal-500/10">
-										{lang}
-									</span>
-								))}
-							</div>
-						</div>
-						<div>
-							<h4 class="text-xs font-semibold text-zinc-300 uppercase mb-2 font-mono tracking-wider">Tools & Infrastructure</h4>
-							<div class="flex flex-wrap gap-2">
-								{['Git', 'Azure DevOps', 'VS Code', 'Shiny', 'Tidyverse'].map(tool => (
-									<span class="rounded bg-teal-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-teal-400 border border-teal-500/10">
-										{tool}
-									</span>
-								))}
-							</div>
-						</div>
-						<div>
-							<h4 class="text-xs font-semibold text-zinc-300 uppercase mb-2 font-mono tracking-wider">Quantitative Math</h4>
-							<div class="flex flex-wrap gap-2">
-								{['Extreme Value Theory', 'GLM', 'Time Series (Cointegration)', 'Machine Learning'].map(math => (
-									<span class="rounded bg-teal-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-teal-400 border border-teal-500/10">
-										{math}
-									</span>
-								))}
-							</div>
-						</div>
+			<!-- ================= 05 Activity ================= -->
+			<section id="activity" class="section" aria-labelledby="activity-title">
+				<header class="section-head">
+					<p class="section-num">05</p>
+					<h3 id="activity-title" data-split class="section-title">LeetCode &amp; GitHub</h3>
+					<p class="section-sub">Practice and output, live.</p>
+				</header>
+				<div class="grid grid-cols-1 gap-4">
+					<div data-reveal class="card spotlight min-w-0 overflow-hidden p-6">
+						<h4 class="mb-4 text-sm font-bold text-zinc-100">GitHub Contributions</h4>
+						<GitHubCard client:only="react" />
 					</div>
-				</section>
-
-				<!-- Beyond Code Section -->
-				<section class="space-y-4">
-					<h3 class="text-xs font-bold uppercase tracking-wider text-zinc-405 border-b border-zinc-850 pb-2">
-						Beyond Code
-					</h3>
-					<div class="border border-zinc-800 bg-zinc-900/20 rounded-xl p-5 backdrop-blur-sm">
-						<p class="text-xs text-zinc-400 leading-relaxed font-sans">
-							Applying data-driven optimization outside the terminal. Elite sprint swimmer utilizing structured biohacking and sleep analytics for peak performance. Personal Best: <span class="font-bold text-teal-400">30.09s</span> in 50m Breaststroke at the Danish Open.
-						</p>
+					<div data-reveal style="--delay:70ms" class="card spotlight p-6">
+						<h4 class="mb-4 text-sm font-bold text-zinc-100">LeetCode Profile</h4>
+						<LeetCodeCard client:only="react" />
 					</div>
-				</section>
-			</div>
+				</div>
+			</section>
 		</div>
 
-		<!-- Featured Infrastructure Section -->
-		<section class="space-y-6">
-			<h3 class="text-xs font-bold uppercase tracking-wider text-zinc-405 border-b border-zinc-850 pb-2">
-				Featured Infrastructure
-			</h3>
-			<div class="grid grid-cols-1 gap-8">
-				<!-- Project 1: Rust API -->
-				<div class="border border-zinc-800 bg-zinc-900/20 rounded-xl p-6 backdrop-blur-sm space-y-4">
-					<div class="flex flex-col sm:flex-row justify-between items-start gap-2">
-						<div>
-							<a href="https://github.com/OskarAllerslev/first-rust-api" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-2">
-								<h4 class="text-lg font-bold text-zinc-100">First Rust API (Stock VaR)</h4>
-								<svg class="h-4 w-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-							</a>
-							<p class="text-sm text-zinc-400 mt-1">
-								A high-performance backend built in Rust using Axum. Fetches ticker data and calculates Historical Value at Risk (VaR) based on continuous returns and empirical quantiles.
-							</p>
-						</div>
-						<div class="flex gap-2">
-							{['Rust', 'Axum', 'API'].map(tag => (
-								<span class="rounded bg-zinc-850 px-2 py-0.5 font-mono text-xs text-zinc-400 border border-zinc-800">{tag}</span>
-							))}
-						</div>
-					</div>
-					<RustApiExplorer client:load />
-				</div>
-
-				<!-- Project 2: C++ Monte Carlo Rough Volatility -->
-				<div class="border border-zinc-800 bg-zinc-900/20 rounded-xl p-6 backdrop-blur-sm space-y-4">
-					<div class="flex flex-col sm:flex-row justify-between items-start gap-2">
-						<div>
-							<a href="https://github.com/OskarAllerslev/Rough-Volatility-Monte-Carlo-Pricer" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-2">
-								<h4 class="text-lg font-bold text-zinc-100">Rough Volatility Monte Carlo Pricer</h4>
-								<svg class="h-4 w-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-							</a>
-							<p class="text-sm text-zinc-400 mt-1">
-								Advanced derivative pricing framework based on fractional Brownian motions (fBM). Solves Stochastic Differential Equations (SDEs) to capture the roughness of electricity spot prices and financial markets.
-							</p>
-						</div>
-						<div class="flex gap-2">
-							{['C++', 'Math', 'SDEs', 'fBM'].map(tag => (
-								<span class="rounded bg-zinc-850 px-2 py-0.5 font-mono text-xs text-zinc-400 border border-zinc-800">{tag}</span>
-							))}
-						</div>
-					</div>
-					<FbmSimulator client:load />
-				</div>
-
-				<!-- Other Projects Sub-Grid -->
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<!-- Nitor energy forecasting -->
-					<div class="border border-zinc-800 bg-zinc-900/20 rounded-xl p-6 backdrop-blur-sm flex flex-col justify-between space-y-4">
-						<div class="space-y-2">
-							<a href="https://github.com/OskarAllerslev/Nitor-energy-competition-2026" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-2">
-								<h4 class="font-bold text-zinc-100 text-sm">Nitor Energy Forecasting Competition 2026</h4>
-								<svg class="h-4 w-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-							</a>
-							<p class="text-xs text-zinc-450 leading-relaxed">
-								Predictive machine learning pipeline forecasting highly volatile energy spot prices across 6 distinct markets. Optimized for RMSE utilizing specialized XGBoost models and domain-specific meteorological features.
-							</p>
-						</div>
-						<div class="flex flex-wrap gap-2 pt-2">
-							{['R', 'tidymodels', 'XGBoost', 'Machine Learning'].map(tag => (
-								<span class="rounded bg-zinc-855 px-2 py-0.5 font-mono text-[11px] text-zinc-450 border border-zinc-800">{tag}</span>
-							))}
-						</div>
-					</div>
-
-					<!-- Lifepack package -->
-					<div class="border border-zinc-800 bg-zinc-900/20 rounded-xl p-6 backdrop-blur-sm flex flex-col justify-between space-y-4">
-						<div class="space-y-2">
-							<a href="https://github.com/OskarAllerslev/lifepack" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-2">
-								<h4 class="font-bold text-zinc-100 text-sm">Lifepack (R Package)</h4>
-								<svg class="h-4 w-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-							</a>
-							<p class="text-xs text-zinc-450 leading-relaxed">
-								Comprehensive R package for life insurance mathematics. Implements robust object-oriented programming (OOP), unit testing, and full roxygen2 documentation for production use.
-							</p>
-							
-							<div class="mt-3 rounded border border-zinc-850 bg-zinc-950/60 p-3 font-mono text-[10px] leading-normal overflow-x-auto no-scrollbar">
-								<div class="text-zinc-500">&gt; library(lifepack)</div>
-								<div class="text-zinc-550">&gt; Lambda &lt;- function(x) matrix(c(-0.1, 0.1, 0.05, -0.05), 2, 2)</div>
-								<div class="text-zinc-550">&gt; R &lt;- function(x, mu) matrix(c(mu, 0, 0, mu), 2, 2)</div>
-								<div class="text-zinc-550">&gt; equiv_premium(0, 80, Lambda, R, dR, 0.05, 0.03, 100)</div>
-								<div class="text-terminal-green">[1] 0.04512</div>
-							</div>
-						</div>
-						<div class="flex justify-between items-center pt-2">
-							<div class="flex flex-wrap gap-2">
-								{['R', 'devtools', 'OOP', 'Unit Testing'].map(tag => (
-									<span class="rounded bg-zinc-855 px-2 py-0.5 font-mono text-[11px] text-zinc-455 border border-zinc-800">{tag}</span>
-								))}
-							</div>
-							<a
-								href="https://cran.r-project.org/web/packages/lifepack/index.html"
-								target="_blank"
-								rel="noopener noreferrer"
-								class="rounded bg-zinc-800 border border-zinc-700 px-2 py-0.5 text-xs font-semibold text-zinc-300 transition hover:bg-zinc-700"
-							>
-								CRAN
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- LeetCode & GitHub Section -->
-		<section class="space-y-6">
-			<h3 class="text-xs font-bold uppercase tracking-wider text-zinc-405 border-b border-zinc-850 pb-2">
-				LeetCode & GitHub
-			</h3>
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-				<div class="border border-zinc-800 bg-zinc-900/20 rounded-xl p-6 backdrop-blur-sm">
-					<h4 class="font-bold text-zinc-100 text-sm mb-4">LeetCode Profile</h4>
-					<LeetCodeCard client:only="react" />
-				</div>
-				<div class="border border-zinc-800 bg-zinc-900/20 rounded-xl p-6 backdrop-blur-sm flex flex-col justify-between">
-					<div>
-						<h4 class="font-bold text-zinc-100 text-sm mb-4">GitHub Contributions</h4>
-						<div class="flex justify-center items-center">
-							<GitHubCard client:only="react" />
-						</div>
-					</div>
+		<!-- ================= Closing CTA ================= -->
+		<section class="relative mx-auto mt-10 max-w-6xl px-5 sm:px-8">
+			<div data-reveal class="card relative overflow-hidden px-8 py-16 text-center sm:py-20">
+				<div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(45,212,191,0.12),transparent_60%)]"></div>
+				<p class="font-mono text-[11px] uppercase tracking-[0.25em] text-teal-300/80">Get in touch</p>
+				<h3 class="text-gradient mx-auto mt-4 max-w-2xl text-3xl font-extrabold tracking-tight sm:text-5xl">Let’s talk numbers &amp; code.</h3>
+				<div class="mt-8 flex flex-wrap justify-center gap-3">
+					<a href="https://www.linkedin.com/in/oskarallerslev" target="_blank" rel="noopener noreferrer" class="rounded-xl bg-zinc-100 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:-translate-y-0.5 hover:bg-white">Connect on LinkedIn</a>
+					<a href="/CV_Oskar_Allerslev.pdf" download="CV_Oskar_Allerslev.pdf" class="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:-translate-y-0.5 hover:border-white/20 hover:text-white">Download CV</a>
 				</div>
 			</div>
 		</section>
 	</main>
 
-	<!-- Footer Section -->
-	<footer class="mt-20 py-8 border-t border-zinc-900 relative z-10">
-		<div class="max-w-4xl mx-auto px-6 text-center text-xs text-zinc-550 font-mono">
-			<p>&copy; 2026 Oskar Allerslev. Built with Astro, React & Tailwind.</p>
+	<footer class="relative z-10 mt-16 border-t border-white/[0.06]">
+		<div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-10 sm:flex-row sm:px-8">
+			<p class="font-mono text-xs text-zinc-600">&copy; 2026 Oskar Allerslev. Built with Astro, React &amp; Tailwind.</p>
+			<div class="flex items-center gap-5 text-xs text-zinc-500">
+				<a class="transition hover:text-zinc-200" href="https://www.linkedin.com/in/oskarallerslev" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+				<a class="transition hover:text-zinc-200" href="https://github.com/OskarAllerslev" target="_blank" rel="noopener noreferrer">GitHub</a>
+				<a class="transition hover:text-zinc-200" href="#top">Back to top ↑</a>
+			</div>
 		</div>
 	</footer>
 </Layout>
+
+<script>
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	// ---------- Split section titles into words for a staggered rise ----------
+	document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
+		const words = (el.textContent ?? '').trim().split(/\s+/);
+		el.setAttribute('aria-label', el.textContent?.trim() ?? '');
+		el.innerHTML = words
+			.map((w, i) => `<span class="split-word" aria-hidden="true"><span style="--i:${i}">${w.replace(/&/g, '&amp;')}</span></span>`)
+			.join(' ');
+		el.setAttribute('data-reveal', '');
+	});
+	if (!reduceMotion && 'IntersectionObserver' in window) {
+		const io = new IntersectionObserver(
+			(entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add('is-visible'), io.unobserve(e.target))),
+			{ threshold: 0.2 }
+		);
+		document.querySelectorAll('[data-split]').forEach((el) => io.observe(el));
+	} else {
+		document.querySelectorAll('[data-split]').forEach((el) => el.classList.add('is-visible'));
+	}
+
+	// ---------- Accordion ----------
+	const triggers = [...document.querySelectorAll<HTMLButtonElement>('.project-trigger')];
+	const expandAll = document.querySelector<HTMLButtonElement>('[data-expand-all]');
+	const expandLabel = document.querySelector<HTMLElement>('[data-expand-label]');
+	const syncExpandLabel = () => {
+		const allOpen = triggers.every((t) => t.getAttribute('aria-expanded') === 'true');
+		if (expandLabel) expandLabel.textContent = allOpen ? 'Collapse all' : 'Expand all';
+	};
+	const setOpen = (t: HTMLButtonElement, open: boolean) => {
+		t.setAttribute('aria-expanded', String(open));
+		t.closest('.project')?.classList.toggle('is-open', open);
+		const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+		if (panel) panel.inert = !open;
+	};
+	triggers.forEach((t) => setOpen(t, false));
+	triggers.forEach((t) =>
+		t.addEventListener('click', () => {
+			setOpen(t, t.getAttribute('aria-expanded') !== 'true');
+			syncExpandLabel();
+		})
+	);
+	expandAll?.addEventListener('click', () => {
+		const open = !triggers.every((t) => t.getAttribute('aria-expanded') === 'true');
+		triggers.forEach((t) => setOpen(t, open));
+		syncExpandLabel();
+	});
+
+	// ---------- Count-up ----------
+	document.querySelectorAll<HTMLElement>('[data-count-to]').forEach((el) => {
+		const target = parseFloat(el.dataset.countTo ?? '0');
+		if (reduceMotion || !('IntersectionObserver' in window)) return;
+		el.textContent = '0.00';
+		const io = new IntersectionObserver(([e]) => {
+			if (!e.isIntersecting) return;
+			io.disconnect();
+			const t0 = performance.now();
+			const dur = 1400;
+			const step = (now: number) => {
+				const p = Math.min(1, (now - t0) / dur);
+				const eased = 1 - Math.pow(1 - p, 4);
+				el.textContent = (target * eased).toFixed(2);
+				if (p < 1) requestAnimationFrame(step);
+			};
+			requestAnimationFrame(step);
+		}, { threshold: 0.6 });
+		io.observe(el);
+	});
+
+	// ---------- Scroll-linked effects (single rAF loop) ----------
+	const hero = document.querySelector<HTMLElement>('[data-hero]');
+	const rows = [...document.querySelectorAll<HTMLElement>('[data-marquee]')];
+	const marquee = document.querySelector<HTMLElement>('.marquee');
+	const timeline = document.querySelector<HTMLElement>('[data-timeline]');
+	const fill = document.querySelector<HTMLElement>('[data-timeline-fill]');
+	const items = [...document.querySelectorAll<HTMLElement>('[data-timeline-item]')];
+
+	let ticking = false;
+	const update = () => {
+		ticking = false;
+		const vh = window.innerHeight;
+
+		if (hero && !reduceMotion) {
+			const p = Math.min(1, Math.max(0, window.scrollY / (vh * 0.9)));
+			hero.style.setProperty('--hp', p.toFixed(3));
+		}
+
+		if (marquee) {
+			const r = marquee.getBoundingClientRect();
+			if (r.bottom > 0 && r.top < vh) {
+				const offset = (vh - r.top) * 0.35;
+				rows.forEach((row) => {
+					const dir = Number(row.dataset.marquee);
+					const base = dir < 0 ? 0 : -row.scrollWidth / 3;
+					row.style.transform = `translate3d(${base + dir * offset}px,0,0)`;
+				});
+			}
+		}
+
+		if (timeline && fill) {
+			const r = timeline.getBoundingClientRect();
+			const center = vh * 0.6;
+			const p = Math.min(1, Math.max(0, (center - r.top) / r.height));
+			fill.style.transform = `scaleY(${p})`;
+			items.forEach((it) => {
+				const dot = it.querySelector('.timeline-dot');
+				dot?.classList.toggle('is-past', it.getBoundingClientRect().top + 30 < center);
+			});
+		}
+	};
+	const onScroll = () => {
+		if (!ticking) {
+			ticking = true;
+			requestAnimationFrame(update);
+		}
+	};
+	addEventListener('scroll', onScroll, { passive: true });
+	addEventListener('resize', onScroll);
+	update();
+</script>
+
+<style is:global>
+	@keyframes scrollcue {
+		0% { transform: translateY(-100%); }
+		100% { transform: translateY(300%); }
+	}
+
+	/* Hero recedes as you scroll past it */
+	.hero-parallax {
+		opacity: calc(1 - var(--hp, 0) * 0.85);
+		transform: translate3d(0, calc(var(--hp, 0) * 60px), 0) scale(calc(1 - var(--hp, 0) * 0.04));
+		transform-origin: 50% 0;
+		will-change: transform, opacity;
+	}
+
+	/* Marquee */
+	.marquee {
+		mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+	}
+	.marquee-row { will-change: transform; }
+	.text-outline {
+		color: transparent;
+		-webkit-text-stroke: 1px rgba(161, 161, 170, 0.35);
+	}
+	.text-outline-thin {
+		color: transparent;
+		-webkit-text-stroke: 1px rgba(45, 212, 191, 0.4);
+	}
+
+	/* Sections: one consistent two-column grid, sticky heading on the left */
+	.section {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2rem;
+		padding: 6rem 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.05);
+	}
+	@media (min-width: 900px) {
+		.section {
+			grid-template-columns: 240px minmax(0, 1fr);
+			gap: 4rem;
+		}
+		.section-head {
+			position: sticky;
+			top: 6.5rem;
+			align-self: start;
+		}
+	}
+	.section-num {
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-size: 11px;
+		letter-spacing: 0.2em;
+		color: rgba(45, 212, 191, 0.8);
+	}
+	.section-title {
+		margin-top: 0.6rem;
+		font-size: clamp(1.75rem, 3vw, 2.1rem);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
+		color: #f4f4f5;
+	}
+	.section-sub {
+		margin-top: 0.75rem;
+		max-width: 22rem;
+		font-size: 13.5px;
+		line-height: 1.6;
+		color: #71717a;
+	}
+
+	/* Word-by-word title rise */
+	.split-word {
+		display: inline-block;
+		overflow: hidden;
+		vertical-align: top;
+		padding-bottom: 0.08em;
+	}
+	.split-word > span {
+		display: inline-block;
+		transform: translateY(105%);
+		transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+		transition-delay: calc(var(--i) * 70ms);
+	}
+	.is-visible .split-word > span,
+	html:not(.js) .split-word > span {
+		transform: none;
+	}
+	[data-split][data-reveal] {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
+	/* Timeline */
+	.timeline-fill {
+		transform: scaleY(0);
+		box-shadow: 0 0 12px rgba(45, 212, 191, 0.5);
+	}
+	.timeline-dot.is-past {
+		border-color: rgba(45, 212, 191, 0.6);
+		box-shadow: 0 0 16px -2px rgba(45, 212, 191, 0.7);
+	}
+	.timeline-dot.is-past > span {
+		background: #5eead4;
+	}
+
+	/* Toolkit */
+	.card-label {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin-bottom: 1rem;
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-size: 11px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: #d4d4d8;
+	}
+	.card-icon {
+		display: grid;
+		place-items: center;
+		height: 1.6rem;
+		width: 1.6rem;
+		border-radius: 0.45rem;
+		border: 1px solid rgba(45, 212, 191, 0.2);
+		background: rgba(45, 212, 191, 0.06);
+		color: #5eead4;
+		font-size: 11px;
+	}
+	.formula .katex-display {
+		margin: 0.6em 0;
+	}
+	.formula .katex {
+		font-size: 1.02em;
+	}
+
+	/* Project accordion */
+	.project-trigger {
+		display: flex;
+		width: 100%;
+		align-items: center;
+		gap: 1.25rem;
+		padding: 1.4rem 1.5rem;
+		cursor: pointer;
+		border-radius: inherit;
+	}
+	.project-trigger:focus-visible {
+		outline: 2px solid rgba(45, 212, 191, 0.6);
+		outline-offset: 2px;
+	}
+	.project-index {
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-size: 12px;
+		color: #52525b;
+		width: 2rem;
+		flex-shrink: 0;
+		transition: color 0.3s ease;
+	}
+	.project:hover .project-index,
+	.project.is-open .project-index {
+		color: #5eead4;
+	}
+	.project-plus {
+		position: relative;
+		height: 2rem;
+		width: 2rem;
+		flex-shrink: 0;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, background 0.3s;
+	}
+	.project-plus::before,
+	.project-plus::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 11px;
+		height: 1.5px;
+		background: #a1a1aa;
+		transform: translate(-50%, -50%);
+		border-radius: 2px;
+	}
+	.project-plus::after {
+		transform: translate(-50%, -50%) rotate(90deg);
+	}
+	.project:hover .project-plus {
+		border-color: rgba(45, 212, 191, 0.4);
+	}
+	.project.is-open .project-plus {
+		transform: rotate(135deg);
+		border-color: rgba(45, 212, 191, 0.5);
+		background: rgba(45, 212, 191, 0.08);
+	}
+	.project.is-open {
+		border-color: rgba(45, 212, 191, 0.18);
+	}
+	.project-panel {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.project-panel > div {
+		opacity: 0;
+		transform: translateY(-6px);
+		transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.project.is-open .project-panel {
+		grid-template-rows: 1fr;
+	}
+	.project.is-open .project-panel > div {
+		opacity: 1;
+		transform: none;
+		transition-delay: 0.1s;
+	}
+	.project-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 13px;
+		font-weight: 500;
+		color: #5eead4;
+	}
+	.project-link:hover {
+		text-decoration: underline;
+		text-underline-offset: 4px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.split-word > span { transform: none; transition: none; }
+		.project-panel, .project-panel > div, .project-plus { transition: none; }
+	}
+</style>

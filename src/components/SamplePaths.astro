@@ -1,0 +1,167 @@
+---
+// Decorative hero background: geometric Brownian motion sample paths drawn live,
+// with the analytic mean E[S_t] = S_0 e^{μt} as a dashed reference curve.
+---
+
+<div class="sample-paths pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+	<canvas class="h-full w-full"></canvas>
+	<span class="absolute bottom-3 right-4 hidden font-mono text-[10px] tracking-wider text-zinc-600 sm:block">
+		dS<sub>t</sub> = μS<sub>t</sub>dt + σS<sub>t</sub>dW<sub>t</sub>
+	</span>
+</div>
+
+<style>
+	.sample-paths {
+		mask-image: radial-gradient(ellipse 55% 65% at 82% 45%, #000 30%, transparent 100%);
+		-webkit-mask-image: radial-gradient(ellipse 55% 65% at 82% 45%, #000 30%, transparent 100%);
+	}
+	@media (max-width: 767px) {
+		.sample-paths {
+			opacity: 0.35;
+		}
+	}
+</style>
+
+<script>
+	const root = document.querySelector<HTMLDivElement>('.sample-paths');
+	const canvas = root?.querySelector('canvas');
+	const ctx = canvas?.getContext('2d');
+
+	if (root && canvas && ctx) {
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const N_PATHS = 9;
+		const STEPS = 260;
+		const MU = 0.06;
+		const SIGMA = 0.22;
+		const T = 1;
+		const DT = T / STEPS;
+
+		let width = 0;
+		let height = 0;
+		let paths: number[][] = [];
+		let step = 0;
+		let holdUntil = 0;
+		let running = false;
+		let raf = 0;
+
+		const gauss = () => {
+			let u = 0;
+			let v = 0;
+			while (u === 0) u = Math.random();
+			while (v === 0) v = Math.random();
+			return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+		};
+
+		const reset = () => {
+			paths = Array.from({ length: N_PATHS }, () => [1]);
+			step = 0;
+		};
+
+		const advance = () => {
+			for (const p of paths) {
+				const s = p[p.length - 1];
+				p.push(s * Math.exp((MU - 0.5 * SIGMA * SIGMA) * DT + SIGMA * Math.sqrt(DT) * gauss()));
+			}
+			step++;
+		};
+
+		const resize = () => {
+			const dpr = Math.min(window.devicePixelRatio || 1, 2);
+			width = canvas.clientWidth;
+			height = canvas.clientHeight;
+			canvas.width = Math.round(width * dpr);
+			canvas.height = Math.round(height * dpr);
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		};
+
+		// Map log-price to screen; ±3σ√T band around the drift keeps paths in frame.
+		const yOf = (s: number) => {
+			const span = 3 * SIGMA * Math.sqrt(T);
+			const mid = (MU - 0.5 * SIGMA * SIGMA) * T * 0.5;
+			const t = (Math.log(s) - mid) / span;
+			return height * (0.5 - t * 0.42);
+		};
+		const xOf = (i: number) => width * 0.04 + (i / STEPS) * width * 0.92;
+
+		const draw = () => {
+			ctx.clearRect(0, 0, width, height);
+
+			// Analytic mean curve E[S_t]
+			ctx.setLineDash([3, 6]);
+			ctx.strokeStyle = 'rgba(161,161,170,0.25)';
+			ctx.lineWidth = 1;
+			ctx.beginPath();
+			for (let i = 0; i <= STEPS; i++) {
+				const y = yOf(Math.exp(MU * i * DT));
+				i === 0 ? ctx.moveTo(xOf(i), y) : ctx.lineTo(xOf(i), y);
+			}
+			ctx.stroke();
+			ctx.setLineDash([]);
+
+			const grad = ctx.createLinearGradient(0, 0, width, 0);
+			grad.addColorStop(0, 'rgba(45,212,191,0.05)');
+			grad.addColorStop(0.5, 'rgba(45,212,191,0.45)');
+			grad.addColorStop(1, 'rgba(167,139,250,0.55)');
+
+			paths.forEach((p, k) => {
+				ctx.strokeStyle = grad;
+				ctx.globalAlpha = 0.35 + 0.65 * ((k + 1) / N_PATHS) * 0.6;
+				ctx.lineWidth = k === N_PATHS - 1 ? 1.6 : 1;
+				ctx.beginPath();
+				p.forEach((s, i) => (i === 0 ? ctx.moveTo(xOf(i), yOf(s)) : ctx.lineTo(xOf(i), yOf(s))));
+				ctx.stroke();
+
+				// Leading point
+				const last = p.length - 1;
+				ctx.globalAlpha = 1;
+				ctx.fillStyle = k % 2 ? 'rgba(167,139,250,0.9)' : 'rgba(94,234,212,0.9)';
+				ctx.beginPath();
+				ctx.arc(xOf(last), yOf(p[last]), 1.6, 0, Math.PI * 2);
+				ctx.fill();
+			});
+			ctx.globalAlpha = 1;
+		};
+
+		const tick = (now: number) => {
+			if (!running) return;
+			if (step < STEPS) {
+				advance();
+				if (step < STEPS) advance();
+				if (step >= STEPS) holdUntil = now + 2200;
+			} else if (now > holdUntil) {
+				reset();
+			}
+			draw();
+			raf = requestAnimationFrame(tick);
+		};
+
+		const start = () => {
+			if (running || reduceMotion) return;
+			running = true;
+			raf = requestAnimationFrame(tick);
+		};
+		const stop = () => {
+			running = false;
+			cancelAnimationFrame(raf);
+		};
+
+		resize();
+		reset();
+		if (reduceMotion) {
+			while (step < STEPS) advance();
+			draw();
+		}
+
+		new ResizeObserver(() => {
+			resize();
+			draw();
+		}).observe(canvas);
+
+		let inView = false;
+		new IntersectionObserver(([e]) => {
+			inView = e.isIntersecting;
+			inView ? start() : stop();
+		}).observe(root);
+		document.addEventListener('visibilitychange', () => (document.hidden ? stop() : inView && start()));
+	}
+</script>
